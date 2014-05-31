@@ -50,7 +50,7 @@ for i, k in enumerate(twitter_dict.keys()):
             user_dict[k] = user_object
         except Exception as e:
             print e
-            missing_append(screen_name)
+            missing.append(screen_name)
     time.sleep(5)
     print i, datetime.now() - t_1
 
