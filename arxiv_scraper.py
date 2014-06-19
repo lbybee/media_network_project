@@ -1,6 +1,8 @@
 from BeautifulSoup import BeautifulSoup
+import cPickle
 import requests
-import slate
+import slat
+
 
 def getCategories(url):
     """gets all the categories for arxiv"""
@@ -79,3 +81,29 @@ def getArticle(url, a_url):
     doc = slate.PDF(input_)
     article_dict["text"] = doc
     return article_dict
+
+
+def fullRun(url, t_sleep, url_f, output_f):
+    """gets all the articles"""
+
+    article_urls = []
+    articles = []
+    categories = getCategories(url)
+    time.sleep(t_sleep)
+    for c in categories:
+        years = getYears(url, c)
+        time.sleep(t_sleep)
+        for y in years:
+            months, max_ind = getMonths(url, y)
+            time.sleep(t_sleep)
+            for m, m_i in zip(months, max_ind):
+                articles.extend(getArticleUrls(url, m, m_i, t_sleep))
+                time.sleep(t_sleep)
+                print c, y, m, datetime.now() - t_1
+    cPickle.dump(article_urls, open(url_f, "wb"))
+
+    # now get articles
+    for a in article_urls:
+        articles.append(getArticle(url, a))
+        time.sleep(t_sleep)
+    cPickle.dump(articles, open(output_f, "wb"))
