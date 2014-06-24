@@ -1,7 +1,8 @@
 from BeautifulSoup import BeautifulSoup
 import cPickle
+from datetime import datetime
 import requests
-import slat
+import time
 
 
 def getCategories(url):
@@ -33,8 +34,8 @@ def getMonths(url, year):
     base_pg = requests.get(url + year)
     soup = BeautifulSoup(base_pg.text)
     months = [a.find("a")["href"] for a in soup.find("ul").findAll("li")]
-    num_1 = [a.find("b") for a in soup.find("ul").findAll("li")]
-    num_2 = [a.find("i") for a in soup.find("ul").findAll("li")]
+    num_1 = [a.find("b").text for a in soup.find("ul").findAll("li")]
+    num_2 = [a.find("i").text for a in soup.find("ul").findAll("li")]
     num = [x + y for x, y in zip(num_1, num_2)]
     return months, num
 
@@ -43,13 +44,13 @@ def getArticleUrls(url, month, max_ind, t_sleep):
     """gets all the articles for a month"""
 
     articles = []
-    for i in range(max_ind / 2000 + 1):
+    for i in range(0, int(max_ind) / 2000 + 1, 2000):
         if i > 0:
             # only sleep if there is more than one page, otherwise the sleep
             # is external
             time.sleep(t_sleep)
-        base_pg = requests.get(url + year, data={"show": (i + 1) * 2000,
-                                                 "skip": i * 2000})
+        base_pg = requests.get(url + month, data={"show": (i + 1) * 2000,
+                                                  "skip": i * 2000})
         soup = BeautifulSoup(base_pg.text)
         articles.extend([a["href"] for a in
                          soup.findAll("a", {"title": "Abstract"})])
@@ -83,27 +84,35 @@ def getArticle(url, a_url):
     return article_dict
 
 
-def fullRun(url, t_sleep, url_f, output_f):
+def fullRun(url, t_sleep, url_f, output_f, start_ind, urls=True):
     """gets all the articles"""
 
-    article_urls = []
-    articles = []
-    categories = getCategories(url)
-    time.sleep(t_sleep)
-    for c in categories:
-        years = getYears(url, c)
+    if urls:
+        t_1 = datetime.now()
+        article_urls = []
+        articles = []
+        categories = getCategories(url)
         time.sleep(t_sleep)
-        for y in years:
-            months, max_ind = getMonths(url, y)
+        for c in categories:
+            years = getYears(url, c)
             time.sleep(t_sleep)
-            for m, m_i in zip(months, max_ind):
-                articles.extend(getArticleUrls(url, m, m_i, t_sleep))
+            for y in years:
+                months, max_ind = getMonths(url, y)
                 time.sleep(t_sleep)
-                print c, y, m, datetime.now() - t_1
-    cPickle.dump(article_urls, open(url_f, "wb"))
+                for m, m_i in zip(months, max_ind):
+                    articles.extend(getArticleUrls(url, m, m_i, t_sleep))
+                    time.sleep(t_sleep)
+                    print c.split("/")[-1], y.split("/")[-1], m.split("/")[-1], datetime.now() - t_1
+        cPickle.dump(article_urls, open(url_f, "wb"))
+        print "got urls"
+    else:
+        article_urls = cPickle.load(open(url_f, "rb"))
 
     # now get articles
-    for a in article_urls:
+    t_1 = datetime.now()
+    ln = len(article_urls)
+    for i, a in enumerate(article_urls[start_ind:]):
         articles.append(getArticle(url, a))
+        print start_ind + i, (start_ind + i) * 100. / ln, datetime.now() - t_1
         time.sleep(t_sleep)
     cPickle.dump(articles, open(output_f, "wb"))
