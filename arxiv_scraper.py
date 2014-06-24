@@ -84,25 +84,30 @@ def getArticle(url, a_url):
     return article_dict
 
 
-def fullRun(url, t_sleep, url_f, output_f, start_ind, urls=True):
+def fullRun(url, t_sleep, url_f, output_f, backup_f, start_ind, urls=True):
     """gets all the articles"""
 
     if urls:
+        backup = open(backup_f, "wb")
         t_1 = datetime.now()
         article_urls = []
         articles = []
         categories = getCategories(url)
+        categories[14] = "/archive/cs"
         time.sleep(t_sleep)
-        for c in categories:
+        for i, c in enumerate(categories):
             years = getYears(url, c)
             time.sleep(t_sleep)
-            for y in years:
+            for j, y in enumerate(years):
                 months, max_ind = getMonths(url, y)
                 time.sleep(t_sleep)
                 for m, m_i in zip(months, max_ind):
-                    articles.extend(getArticleUrls(url, m, m_i, t_sleep))
+                    temp_urls = getArticleUrls(url, m, m_i, t_sleep)
+                    for u in temp_urls:
+                        backup.write(u + "\n")
+                    articles.extend(temp_urls)
                     time.sleep(t_sleep)
-                    print c.split("/")[-1], y.split("/")[-1], m.split("/")[-1], datetime.now() - t_1
+                    print c.split("/")[-1], y.split("/")[-1], m.split("/")[-1], datetime.now() - t_1, i, j
         cPickle.dump(article_urls, open(url_f, "wb"))
         print "got urls"
     else:
