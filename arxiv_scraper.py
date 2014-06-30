@@ -15,6 +15,7 @@ def getCategories(url):
     for c in categories:
         sub_c = [a.find("a")["href"] for a in c.findAll("li")]
         sub_cat.extend(sub_c)
+    sub_cat[14] = unicode("/archive/cs")
     return sub_cat
 
 
