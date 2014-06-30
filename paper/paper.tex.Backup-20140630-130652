@@ -9,7 +9,7 @@
 \usepackage[colorinlistoftodos]{todonotes}
 
 \title{Social Learning in the Media: The Importance of Bias for Trust Between Media Firms}
-\author{Bryan Kelly, Joseph Leland Bybee}
+\author{Joseph Leland Bybee}
 \date{\today}
 
 \begin{document}
@@ -49,69 +49,5 @@ Two key variants that are important here are dynamic topic models and author top
 and Lafferty introduce the idea of dynamic topic models to represent how topic may change over time\footnote{Blei and Lafferty.  Dynamic Topic Models. 2006}.  They assume that the underlying topic proportions are drawn from some multivariate normal distribution centered around the prior topic distribution.  While we don't use the same implementation here, the idea a dynamic topic is essential to our work as our estimates for the trust edges represent how much a news story influences the underlying topic distribution for other media firms.  Rosen-Zvi et. al present another important variant in the idea of author topic models\footnote{Rosen-Zvi, Griffiths, Steyvers, Smyth.  The Author-Topic Model for Authors and Documents. 2004.}.  Their model assumes that each author has some underlying preference for certain topics that can be used to cluster documents.  While we don't directly implement this procedure the idea of a biased view of topics tied to each author is important to our model.
 
 A number of studies have used similar methods to investigate similar datasets to ours.  Hong and Davison investigate and author topic model in the Twitter context to determine how Twitter users cluster and share information\footnote{Hong and Davison. Empirical Study of Topic Modeling in Twitter. 2010.}.  Grant et. al develop an online approach to estimating topics in the Twitter search context\footnote{Grant, George, Jenneisch and Wilson. Online Topic Modeling for Real-time Twitter Search. 2011.}.  Zhao et. al use a topic model to compare Twitter media to traditional media sources\footnote{Zhao, Jiang, Weng, He, Lim, Yan and Li. 2011.}.  Finally, Blei and Lafferty use a correlated topic model to estimate correlation within the scientific community using an academic article data set similar to the one used here\footnote{Blei and Lafferty. A Correlated Topic Model of Science. 2007.}.
-
-\section{Model}
-
-As with the Gentzkow and Shapiro model, we assume that there are two states of the world
-
-\[S \in [L,R].\]
-
-There are $N$ distinct populations that each make a decision
-
-\[A_i \in [L, R].\]
-
-The $i$th population will receive a positive payoff in the case that $A_i = S$ and a payoff of zero otherwise.  Each population has a prior belief about the state of the world
-
-\[P_i^c(R) = \theta_i^c.\]
-
-For each population there is a monopolist news firm that has a prior belief about the state of the world
-
-\[P_i(R) = \theta_i.\]
-
-Each news firm receives a signal about the state of the world
-
-\[s_i \in[l, r]\]
-
-and can report their signal (or a variation of their signal) to their population.  There is some probability $\lambda$ that a given news firm is high quality.  A high quality news firm is a news firm that receives a perfect signal of the world in each period, that is
-
-\[p_i(l|L) = p_i(r|R) =1.\]
-
-Alternatively, a firm can be a normal quality firm.  If this is the case than there is a probability $\pi_i$ that the firms receives a signal that aligns with the state of the world
-
-\[p_i(l|L) = p_i(r|R) = \pi_i.\]
-
-Each firm can publish a report based on their signal
-
-\[\hat{s}_i \in [\hat{l}, \hat{r}].\]
-
-Gentzkow and Shapiro show that the optimal strategy for a high quality firm is to always report the truth, that is
-
-\[\hat{s}_i = s_i.\]
-
-However, for the normal quality firm it may be better to lie.  Each firm can chose a strategy based on their signal
-
-\[\sigma_{is}(\hat{s}) = p_i(\hat{s}|s).\]
-
-For the remainder of this paper we constrain ourselves to the case where \[\sigma_{ir}(\hat{r}) > \sigma_{il}(\hat{l}).\]
-
-Gentzkow and Shapiro show that, in the case where a consumer receives no exogenous signal about the state of the world, their posterior beliefs about the quality of their monopolist news provider is a strictly increasing function of the likelihood ratio
-
-\[\frac{p(\hat{r}|\text{high}_i)}{p(\hat{r}|\text{normal}_i)}=\frac{\theta_i^c}{\theta_i^c[\sigma_r(\hat{r}_i) \pi_i + \sigma_l(\hat{r}_i)(1-\pi_i)] + (1 - \theta_c^i)[\sigma_r(\hat{r}_i)(1-\pi_i) + \sigma_l(\hat{l}_i)\pi_i]}\]
-
-This suggests that the higher $\theta_i^c$, the more likely that a consumer will believe the $i$th firm is of high quality.  In equilibrium they show that the expected gain for publishing $\hat{r}$ is
-
-\[\Delta(s)_i = (1 - \mu)\Delta^{nf}_i+\mu \Delta^f_i(s)\]
-
-where
-
-\[\Delta^{nf}_i =f(\lambda_i(\hat{r}, 0)) - f(\lambda_i(\hat{r}, 1)\]
-
-and
-
-\[\Delta^f_i(s) = \theta_i(s)[f(\lambda_i(\hat{r}, R)) - f(0)] - (1-\theta_i(s))[f(\lambda_i(\hat{l},L) - f(0)]\]
-
-In the above, $\lambda_i(\hat{s},0)$ represents the consumers posterior belief about the quality of the $i$th firm in the case of no feedback and $\lambda_i(\hat{s},S)$ represents the consumers posterior belief about the quality of the $i$th firm in the case of feedback.  $\theta_i(s)$ is the $i$th firms posterior belief about the state of the world after receiving their signal $s_i$. Gentzkow and Shapiro show that under equilibrium conditions it is in a normal media firms interests to skew their reporting to align with the consumers priors about the state of the world.
-  
-We now consider the situations in which firms can learn from each other.
 
 \end{document}
