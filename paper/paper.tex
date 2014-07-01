@@ -111,7 +111,77 @@ and
 \[\Delta^f_i(s) = \theta_i(s)[f(\lambda_i(\hat{r}, R)) - f(0)] - (1-\theta_i(s))[f(\lambda_i(\hat{l},L) - f(0)]\]
 
 In the above, $\lambda_i(\hat{s},0)$ represents the consumers posterior belief about the quality of the $i$th firm in the case of no feedback and $\lambda_i(\hat{s},S)$ represents the consumers posterior belief about the quality of the $i$th firm in the case of feedback.  $\theta_i(s)$ is the $i$th firms posterior belief about the state of the world after receiving their signal $s_i$. Gentzkow and Shapiro show that under equilibrium conditions it is in a normal media firms interests to skew their reporting to align with the consumers priors about the state of the world.
+
+\subsection{Inter-Firm Trust}
   
-We now consider the situations in which firms can learn from each other.
+We now consider the situations in which firms can learn from each other.  We assume that in equilibrium the $i$th firm generally publish articles that align with their consumers priors, $\theta_i^c$ and that the firms priors should reflect this, so $\theta_i \approx \theta_i^c$.  $\theta_i$ can then be thought of as the proportion of news stories published by the $i$th firm that correspond to the $R$ state of the world.  So then over $T$ periods we would expect $\theta_iT$ reports to be $\hat{r}$.  Let's now turn to the $j$th firm's beliefs about the quality of the $i$th firm over $T$ periods.  In each period, the $j$th firms beliefs should be
+ 
+ \[p_j(\text{high}_i|\hat{\textbf{s}}_{it}) = \frac{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)p_j(\text{high}_i)}{p_j(\hat{\textbf{s}}_{it})}\]
+
+where $\hat{\textbf{s}}_{it}$ is a vector of the reports made by the $i$th firm.  Assuming that the beliefs follow the monotone likelihood ratio property we can show that
+
+\[p_j(\text{high}_i|\hat{\textbf{s}}_{it}) = \frac{p_j(\text{high}_i)}{1 + \frac{p_j(\hat{\textbf{s}}_{it}|\text{normal}_i)}{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)}}\]
+
+This gives us the Gentzkow and Shapiro result that $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is a strictly increasing function of $\frac{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)}{p_j(\hat{\textbf{s}}_{it}|\text{normal}_i)}$.  Since the proportion of $\hat{\textbf{s}}_{it}$ that is $\hat{r}$ is an increasing function of $\theta_j$,  $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is an decreasing function of $\theta_j - \theta_i$, that is the more similar the $i$th firms beliefs are to those of the $j$th firm the more likely the $j$th firm is to believe the $i$th firm is high quality.
+
+We can use this idea to represent how much different news firms trust each other.  We use this to help derive a number of bias free measures of truth and quality that could be used to help understand how the media market works.  Throughout the remainder of this paper we will think of $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ as the probability that the $j$th firm will incorporate the $i$th firms report into their own report.
+
+NOTE: I think the next two sections may be the most interesting but they still need a good deal of development.  I don't really know what to do with them.
+
+\subsection{Estimating Bias-Free Truth}
+
+Consider a case where you have $N$ firms, as before, however, each firm cannot observe the reports of the other firms.  Additionally, assume that you are a Bayesian agent observing all $N$ firms and you want to get some estimate of the actual state of the world.  You may have your prior belief about the state of the world
+
+\[p(R) = \theta\]
+
+Additionally, you have the reports for each of the $N$ firms as evidence.  Then what you might do is update your beliefs following Bayes rule
+ 
+ \[p(R|\hat{\textbf{s}}) \propto p(\hat{s}_1|R)...p(\hat{s}_N|R)p(R)\]
+ 
+ Unfortunately, this does not work in the case considered above because each firm can observe the reports of their fellow firms.  Fortunately, since you have a measure of how much likely it is that each firm will incorporate the reports of another firm into their report, $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$.  We could modify the above posterior to account for this, let $\gamma_ij$ represent $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$
+ 
+ \[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})(1-\gamma_{13})...(1-\gamma_{1N})p(\hat{s}_1|R)...(1-\gamma_{N1})(1-\gamma_{N2})...(1-\gamma_{NN-1})p(\hat{s}_N|R)p(R)\]
+ 
+ We propose that this may be used as a measure to estimate the actual truth of a given state of the world.
+  One implication of this proposal is that we are more certain about the state of the world the more dispersed a set of signals are.  To see this consider a simple two agent case.
+
+\[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})p(\hat{s}_1|R)(1-\gamma_{21})p(\hat{s}_2|R)p(R)\]
+
+In this case the more likely either firm trust the other ($\gamma_{12}$ is higher or$\gamma_{21}$ is higher), the lower $p(R|\hat{\textbf{s}})$.  That is that if two firms share a similar belief about the state of the world and report the same signal that aligns with that state of the world, this says less than if two firms that have different beliefs report the same signal.
+
+\subsection{Estimating Bias-Free Quality}
+
+Next we propose a measure of bias-free quality for a given agent.  One aspect of our model that has so far been ignored is the $j$th firm's prior beliefs about the quality of the $i$th firm. We could think of this prior as the equilibrium belief about the quality of the $i$th firm.  Since $\theta_i$ and $\theta_j$ are the equilibrium beliefs for each firm about the state of the world, a reasonable choice for $p_j(H_i)$ might be $\theta_{ij}$, where $\theta_{ij} = \theta_i - \theta_j$.
+If we accept this prior we can then get an estimate for the likelihood function 
+\[p_j(\hat{\textbf{s}}_i|\text{high}_i) = \frac{p_j(\text{high}_i|\hat{\textbf{s}}_i)}{p_j(\text{high}_i)} = \frac{\gamma_ij}{\theta_ij}\]
+
+Using this measure we could then think like the Bayesian agent from the section above
+
+\[p(\text{high}_i|\hat{\textbf{s}}_i) \propto p(\hat{\textbf{s}}_i|\text{high}_i)p(\text{high}_i)\]
+
+\[= p_1(\hat{\textbf{s}}_i|\text{high}_i)p_2(\hat{\textbf{s}}_i|\text{high}_i)...p_N(\hat{\textbf{s}}_i|\text{high}_i)p(\text{high}_i)\]
+
+\[= \frac{\gamma_{1i}}{\theta_{1i}}\frac{\gamma_{2i}}{\theta_{2i}}...\frac{\gamma_{Ni}}{\theta_{Ni}}p(\text{high}_i)\]
+
+This would then suggest that our bias free estimate of quality would be an increasing function of the total trust in the $i$th firm, and a decreasing function of the shared beliefs with the $i$th firm.  The intuition behind this measure is that higher quality firms should be more trusted by all firms controlling for bias.
+
+\subsection{The Significance of Border Cases}
+
+Next we consider the possibility for border agents.  The intuition behind the idea for border agents is that they are agents who have a high enough $\gamma$ value for two different agents with rather low $\gamma$ values that they allow the communication of ideas between groups who otherwise would not communicate.  More formally, consider a network with 3 agents, $i$, $j$, and $k$.  If
+
+\[\gamma_{ij}\gamma_{jk} > \gamma_{ik}\]
+
+the $i$th agent is a border agent.  Border agents are important because they mean that given a lag two groups that otherwise would not receive the same information can receive the same information.
+
+We consider what proportion of the population of firms are border cases and how much information passes through the border cases.  This sub section may belong in a different section.
+
+\subsection{Risk Averse News Firms}
+
+Next we consider the possibility that there are risk averse media firms.  These are firms that are more likely to trust firms that have a higher quality level controlling for bias.  To estimate who the risk averse firms are we could assume the following relationship between trust, bias and bias-free quality
+
+\[\gamma_{ij} = \beta_1 \theta_{ij} + \beta_2 p(\text{high}_j|\hat{\textbf{s}}_j)\]
+
+Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms.  This may also fit better in a different section.
 
 \end{document}
+
