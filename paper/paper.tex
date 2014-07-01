@@ -18,15 +18,15 @@
 
 \section{Introduction}
 
-The problem.  The media is important to determine what people know about the world.  How the media gets its information is important as a result.  When media firms are getting information from their reporters they are getting information from other news media.
+The problem.  The media is important to determine what people know about the world.  How the media gets its information is important as a result.  When media firms aren't getting information from their reporters they are getting information from other news firms.
 
 Our goal is to develop a model of media trust that accounts for trust in the media and how different media firms learn from each other.  Our model allows us to develop a network of trust between different media firms that allows for information diffusion between media firms. 
 
-We examine two novel data sets to investigate this model, the first is a data set of tweets for a list of 3000 media firms in the United States from June to August of 2014.  Additionally, we consider a data set of articles taken from the free archive ArXiv.  We build a trust network for both of these data sets based on a number of different measures of bias and use this to investigate our model.
+We examine two novel data sets to investigate this model, the first is a data set of tweets for a list of 3000 media firms in the United States from June to August of 2014.  Additionally, we consider a data set of articles taken from the free archive ArXiv.  We build a trust network for both of these data sets based on a number of different measures of bias and use this to investigate our model. NOTE: Obviously, if we are going to include this second dataset the problem will be generalized beyond media firms to some idea of "information agents".
 
 We specify our model using a topic model comparable to the popular topic modeling approach, Latent Dirichlet Allocation (LDA).  We uses this to estimate the amount of information that different firms get from each other and uses this as an estimate of trust.
 
-We consider 6 predictions.  First, firms that share common beliefs are more likely to trust each other.  Second, firms that share common beliefs will communicate information faster.  Third, higher quality firms are more likely to be trusted by all firms.  Fourth, information that originates from multiple distance media sources is more likely to be accurate.  Fifth, neutral media sources are important in order to connect different biased groups.  Sixth and finally, 
+We consider 5 predictions.  First, firms that share common beliefs are more likely to trust each other.  Second, firms that share common beliefs will communicate information faster.  Third, higher quality firms are more likely to be trusted by all firms.  Fourth, information that originates from multiple distance media sources is more likely to be accurate.  Fifth, neutral media sources are important in order to connect different biased groups. 
 
 The paper is grouped as follows.  Section 2 presents the prior literature.  Section 3 develops the model used throughout.  Section 4 covers the data sets used.  Section 5 covers the implementation of the model.  Section 6 presents the results.  Finally, Section 7 summarizes and concludes.
 
@@ -36,12 +36,12 @@ We draw heavily from Gentzkow and Shapiro's 2006 paper \emph{Media Bias and Repu
 
 To estimate media bias we consider a number of different measures drawn from several different sources.  Groseclose and Milyo develop a measure that looks at the citations made by different media firms and how these coincide with the citations made by members of Congress\footnote{Groseclose and Milyo. A Measure of Media Bias. 2005.}.  Similarlly, Gentzkow and Shapiro develop a measure of media slant that uses the similarity between words used by different media outlets and members of Congress\footnote{Gentzkow and Shapiro.  What Drives Media Slant?  Evidence from U.S. Daily Newspaper. 2006.}.  Finally, Chiang and Knight develop a model of media bias that looks at endorsements made by media firms\footnote{Chiang and Knight.  Media Bias and Influence: Evidence from Newspaper Endorsements. 2011.}.
 
-The literature on slant in academia is more limited than in the media case, perhaps because the impact is less apparent.  Much of the literature focuses on divisions on citation networks, though some looking at text clustering including one example presented below.  Onder and Tervio look at the division of citation networks into "freshwater" and "saltwater" departments for economics.  They find that the division is very real and significant in a number of cases\footnote{Onder and Tervio.  Is Economics a House Divided?  Analysis of Citation Networks.  2014.}.
+The literature on slant in academia is more limited than in the media case, perhaps because the impact is less apparent.  Much of the literature focuses on divisions of citation networks, though some look at text clustering including one example presented below.  Onder and Tervio look at the division of citation networks into "freshwater" and "saltwater" departments for economics.  They find that the division is very real and significant in a number of cases\footnote{Onder and Tervio.  Is Economics a House Divided?  Analysis of Citation Networks.  2014.}.
 
-The key work we draw from in the social learning literature is Acemoglu et. al's 2011 paper \emph{Bayesian Learning in Social Networks}\footnote{Acemoglu, Dahleh, Lobel and Ozdaglar.  Bayesian Learning in Social Networks. 2011.}.  They develop a model of Bayesian social learning the is built around a stochastic network similar to teh one we develop here.  They derive a number of general conclusions that are significant to this type of model. Acemoglu et. al's work on social learning in endogenous social networks is also significant as it mirrors the network structure we develop here\footnote{Acemoglu, Bimpikis and Ozdaglar.  Dynamic of Information Exchange in Endogenous Social Networks.  2013.}.  Non Bayesian approaches have also been considered in the literature including Jadbabaie et. al's work\footnote{Jadbabaie, Molavi, Sandroni and Tahbaz-Salehi.  Non-Bayesian Social Learning.  2012.}.
+The key work we draw from in the social learning literature is Acemoglu et. al's 2011 paper \emph{Bayesian Learning in Social Networks}\footnote{Acemoglu, Dahleh, Lobel and Ozdaglar.  Bayesian Learning in Social Networks. 2011.}.  They develop a model of Bayesian social learning the is built around a stochastic network similar to the one we develop here.  They derive a number of general conclusions that are significant to this type of model. Acemoglu et. al's work on social learning in endogenous social networks is also significant as it mirrors the network structure we develop here\footnote{Acemoglu, Bimpikis and Ozdaglar.  Dynamic of Information Exchange in Endogenous Social Networks.  2013.}.  Non Bayesian approaches have also been considered in the literature including Jadbabaie et. al's work\footnote{Jadbabaie, Molavi, Sandroni and Tahbaz-Salehi.  Non-Bayesian Social Learning.  2012.}.
 
 There is a large literature on more general information diffusion.  Young provides a good overview of how the social learning methods popular in economics compare to those used in other fields\footnote{Young.  Innovation Diffusion in Heterogeneous Populations: Contagion, Social Influence and Social Learning.  2014.}.  Golub and Jackson study how homophily affects diffusion and learning in networks.  Their results are directly relevant to the work done here\footnote{Golub and Jackson.  How Homophily Affects Learning and Diffusion in Networks. 2009.}.
- Yang and Leskovec develop a general model of information diffusion in implicit networks.  This is significant here because in most cases the network structure for our model is implicit\footnote{Yang and Leskovec.  Modeling Information Diffusion in Implicit Networks.  2010.}.
+ Yang and Leskovec develop a general model of information diffusion in implicit networks.  This is significant here because the network structure for our model is implicit\footnote{Yang and Leskovec.  Modeling Information Diffusion in Implicit Networks.  2010.}.
 
 The method we use to estimate our model has its roots in the topic modeling literature, in particular the idea of LDA, first proposed by Blei, Ng and Jordan\footnote{Blei, Ng, Jordan. Latent Dirichlet Allocation. 2003.}.  LDA is essentially a hierarchical model where it is assumed that each word in a document is drawn from some topic distribution that is drawn for each document.  Using this hierarchical model Blei, Ng and Jordan proposed a method to estimate the underlying topic distribution for a set of documents.  Since their seminal paper the literature has exploded with examples of topic models.  Blei provides a good survey of the methodology\footnote{Blei.  Probabilitic Topic Models. 2012}.
 
@@ -52,7 +52,7 @@ A number of studies have used similar methods to investigate similar datasets to
 
 \section{Model}
 
-As with the Gentzkow and Shapiro model, we assume that there are two states of the world
+The roots of our model lie the Gentzkow and Shapiro paper \emph{Media Bias and Reputation}.  As with the Gentzkow and Shapiro model, we assume that there are two states of the world
 
 \[S \in [L,R].\]
 
@@ -92,7 +92,9 @@ However, for the normal quality firm it may be better to lie.  Each firm can cho
 
 \[\sigma_{is}(\hat{s}) = p_i(\hat{s}|s).\]
 
-For the remainder of this paper we constrain ourselves to the case where \[\sigma_{ir}(\hat{r}) > \sigma_{il}(\hat{l}).\]
+For the remainder of this paper we constrain ourselves to the case where 
+
+\[\sigma_{ir}(\hat{r}) > \sigma_{il}(\hat{l}).\]
 
 Gentzkow and Shapiro show that, in the case where a consumer receives no exogenous signal about the state of the world, their posterior beliefs about the quality of their monopolist news provider is a strictly increasing function of the likelihood ratio
 
@@ -122,9 +124,9 @@ where $\hat{\textbf{s}}_{it}$ is a vector of the reports made by the $i$th firm.
 
 \[p_j(\text{high}_i|\hat{\textbf{s}}_{it}) = \frac{p_j(\text{high}_i)}{1 + \frac{p_j(\hat{\textbf{s}}_{it}|\text{normal}_i)}{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)}}\]
 
-This gives us the Gentzkow and Shapiro result that $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is a strictly increasing function of $\frac{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)}{p_j(\hat{\textbf{s}}_{it}|\text{normal}_i)}$.  Since the proportion of $\hat{\textbf{s}}_{it}$ that is $\hat{r}$ is an increasing function of $\theta_j$,  $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is an decreasing function of $\theta_j - \theta_i$, that is the more similar the $i$th firms beliefs are to those of the $j$th firm the more likely the $j$th firm is to believe the $i$th firm is high quality.
+This gives us the Gentzkow and Shapiro result that $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is a strictly increasing function of $\frac{p_j(\hat{\textbf{s}}_{it}|\text{high}_i)}{p_j(\hat{\textbf{s}}_{it}|\text{normal}_i)}$.  Since the proportion of $\hat{\textbf{s}}_{it}$ that is $\hat{r}$ is an increasing function of $\theta_j$,  $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ is an decreasing function of $\theta_j - \theta_i$, that is, the more similar the $i$th firms beliefs are to those of the $j$th firm the more likely the $j$th firm is to believe the $i$th firm is high quality.
 
-We can use this idea to represent how much different news firms trust each other.  We use this to help derive a number of bias free measures of truth and quality that could be used to help understand how the media market works.  Throughout the remainder of this paper we will think of $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ as the probability that the $j$th firm will incorporate the $i$th firms report into their own report.
+We can use this idea to represent how much different news firms trust each other.  We use this to help derive a number of bias-free measures of truth and quality that could be used to help understand how the media market works.  Throughout the remainder of this paper we will think of $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$ as the probability that the $j$th firm will incorporate the $i$th firms report into their own report.
 
 NOTE: I think the next two sections may be the most interesting but they still need a good deal of development.  I don't really know what to do with them.
 
@@ -138,8 +140,8 @@ Additionally, you have the reports for each of the $N$ firms as evidence.  Then 
  
  \[p(R|\hat{\textbf{s}}) \propto p(\hat{s}_1|R)...p(\hat{s}_N|R)p(R)\]
  
- Unfortunately, this does not work in the case considered above because each firm can observe the reports of their fellow firms.  Fortunately, since you have a measure of how much likely it is that each firm will incorporate the reports of another firm into their report, $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$.  We could modify the above posterior to account for this, let $\gamma_ij$ represent $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$
- 
+ Unfortunately, this does not work in the case considered above because each firm can observe the reports of their fellow firms, so it is possible you may observe duplicate information.  To account for this we need to account for how much firms trust each other and how likely they are to borrow information from other firms.  Fortunately, you have a measure of how much likely it is that each firm will incorporate the reports of another firm into their report, $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$.  We could modify the above posterior to account for this, let $\gamma_ij$ represent $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$
+ x
  \[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})(1-\gamma_{13})...(1-\gamma_{1N})p(\hat{s}_1|R)...(1-\gamma_{N1})(1-\gamma_{N2})...(1-\gamma_{NN-1})p(\hat{s}_N|R)p(R)\]
  
  We propose that this may be used as a measure to estimate the actual truth of a given state of the world.
@@ -147,7 +149,7 @@ Additionally, you have the reports for each of the $N$ firms as evidence.  Then 
 
 \[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})p(\hat{s}_1|R)(1-\gamma_{21})p(\hat{s}_2|R)p(R)\]
 
-In this case the more likely either firm trust the other ($\gamma_{12}$ is higher or$\gamma_{21}$ is higher), the lower $p(R|\hat{\textbf{s}})$.  That is that if two firms share a similar belief about the state of the world and report the same signal that aligns with that state of the world, this says less than if two firms that have different beliefs report the same signal.
+In this case the more likely either firm trust the other ($\gamma_{12}$ is higher or$\gamma_{21}$ is higher), the lower $p(R|\hat{\textbf{s}})$.  That is that if two firms share a similar belief about the state of the world and report the same signal, this says less than if two firms that have different beliefs report the same signal.
 
 \subsection{Estimating Bias-Free Quality}
 
@@ -155,7 +157,7 @@ Next we propose a measure of bias-free quality for a given agent.  One aspect of
 If we accept this prior we can then get an estimate for the likelihood function 
 \[p_j(\hat{\textbf{s}}_i|\text{high}_i) = \frac{p_j(\text{high}_i|\hat{\textbf{s}}_i)}{p_j(\text{high}_i)} = \frac{\gamma_ij}{\theta_ij}\]
 
-Using this measure we could then think like the Bayesian agent from the section above
+Using this measure we could then think like the Bayesian agent from the sub section above
 
 \[p(\text{high}_i|\hat{\textbf{s}}_i) \propto p(\hat{\textbf{s}}_i|\text{high}_i)p(\text{high}_i)\]
 
@@ -173,15 +175,14 @@ Next we consider the possibility for border agents.  The intuition behind the id
 
 the $i$th agent is a border agent.  Border agents are important because they mean that given a lag two groups that otherwise would not receive the same information can receive the same information.
 
-We consider what proportion of the population of firms are border cases and how much information passes through the border cases.  This sub section may belong in a different section.
+We consider what proportion of the population of firms are border agents and how much information passes through the border agents.  NOTE: This sub section may belong in a different section.
 
 \subsection{Risk Averse News Firms}
 
-Next we consider the possibility that there are risk averse media firms.  These are firms that are more likely to trust firms that have a higher quality level controlling for bias.  To estimate who the risk averse firms are we could assume the following relationship between trust, bias and bias-free quality
+Next we consider the possibility that there are risk averse media firms.  These are firms that are willing to pay a premium to avoid poor quality information.  This premium may involve waiting longer to verify a report or only trusting higher quality firms.  We say that these firms are more likely to trust firms that have a higher quality level controlling for bias than less risk averse firms.  To estimate who the risk averse firms are we could assume the following relationship between trust, bias and bias-free quality
 
 \[\gamma_{ij} = \beta_1 \theta_{ij} + \beta_2 p(\text{high}_j|\hat{\textbf{s}}_j)\]
 
-Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms.  This may also fit better in a different section.
+Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms. NOTE: This may also fit better in a different section.
 
 \end{document}
-
