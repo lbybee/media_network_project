@@ -185,4 +185,34 @@ Next we consider the possibility that there are risk averse media firms.  These 
 
 Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms. NOTE: This may also fit better in a different section.
 
+\section{Implementation}
+
+In order to estimate the trust between agents we specify a variation on the Dynamic Topic Model proposed by Blei and Lafferty\footnote{Blei and Lafferty. Dynamic Topic Model. 2006.}.  Topic models are a set of hierarchical models that assume a latent "topic" underlying the choice of words in a collection of documents.  The classical model is Latent Dirichlet Allocation (LDA), proposed by Blei et al.\footnote{Blei, Ng and Jordan. Latent Dirichlet Allocation. 2003}.  Assume that you have a collection of documents $D$ where $D = \{\textbf{w}_1, \textbf{w}_2, ... \textbf{w}_m\}$.  Each $\textbf{w}_i$ is a document consisting of a set of words $w = \{w_1, w_2, ..., w_n\}$.  LDA specifies the following generating process for the collection of documents:
+
+\[\theta_m \sim \text{Dir}(\alpha)\]
+
+\[z_n \sim Mult(\theta_m)\]
+
+\[w_n \sim p(w_n | z_n, \beta) = Mult(\beta_z)\]
+
+That is, $\theta$ is drawn from a Dirichlet distribution for each document.  Then $z_n$ is drawn for each word in the document, and the word is from a Multinomial disttribution contional on the specific $z_n$ drawn and $\beta$.  $\beta$ is a probability matrix where $\beta_{ij} = p(w^j = 1|z^i =1)$.  What makes LDA particularly interesting among the class of clustering models is that topic parameter is sampled for each individual word, allowing for a mixture of topics within a document.  Ultimately LDA allows for the estimation of $\theta$ and $\textbf{z}$ which estimate the distribution of topics within a collection of documents.
+
+Variants of LDA have seen a great deal of success for modeling the popularity of certain ideas within a collection of documents, in particular we focus on the Dynamic Topic Model.  Blei and Lafferty developed the Dynamic Topic Model to account for the changing distribution of topics over time.  It allowed for more accurate estimation when faced with a time series of documents.  The Dynamic Topic Model has a similar structure to LDA, however, it assumes time dependence for the $\alpha$ and $\beta$ parameters.
+
+\[\alpha_t | \alpha_{t-1} \sim N(\alpha_{t-1}, \delta^2I)\]
+
+\[\beta_t | \beta_{t-1} \sim N(\beta_{t-1}, \sigma^2I)\]
+
+\[\theta \sim N(\alpha_t, a^2I)\]
+
+\[z_{tn} \sim Mult(\pi(\theta))\]
+
+\[w_{tn} \sim Mult(\pi(\beta_{t, z}))\]
+
+This generation procedure allows the distribution of topics to change over time, accounting for shifts in the content of documents.  Such a model is important for the dataset we wish to use where topics are changing regularly.  We use a variant of the Dynamic Topic Model that allows for the distribution of $\alpha_{it}$ to be impacted by $\alpha_{-it-1}$.  That is we assume that the underlying topic distribution is ultimately effected by the topic distributions for other agents in a network of agents.  More formally we say that,
+
+\[\alpha_{it} \sim N(\textbf{\alpha}_{t-1}^T \gamma, \delta^2I)\]
+
+$\textbf{\alpha}$ is a vector of the $\alpha$ parameter for each of the $N$ agents, and $\gamma$ is an $N$ dimensional vector of weights for the $N$ agents.  That is, $\alpha_{it}$ is drawn from a weighted sum of the $\alpha$ values for each agent in the prior period.  $\gamma$ gives an estimate of the impact that each agent has on the topic distribution of the $i$th agent.  We use $\gamma$ to represent our trust value discussed above.  Unfortunately, this generating process does not have a conjugate form so we cannot using Gibbs sampling as used commonly with LDA.  Instead we must use a more complicated Metropolis Hastings algorithm to estimate $\gamma$.
+
 \end{document}
