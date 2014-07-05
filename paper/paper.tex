@@ -142,7 +142,9 @@ Additionally, you have the reports for each of the $N$ firms as evidence.  Then 
  
  Unfortunately, this does not work in the case considered above because each firm can observe the reports of their fellow firms, so it is possible you may observe duplicate information.  To account for this we need to account for how much firms trust each other and how likely they are to borrow information from other firms.  Fortunately, you have a measure of how much likely it is that each firm will incorporate the reports of another firm into their report, $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$.  We could modify the above posterior to account for this, let $\gamma_ij$ represent $p_j(\text{high}_i|\hat{\textbf{s}}_{it})$
  x
- \[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})(1-\gamma_{13})...(1-\gamma_{1N})p(\hat{s}_1|R)...(1-\gamma_{N1})(1-\gamma_{N2})...(1-\gamma_{NN-1})p(\hat{s}_N|R)p(R)\]
+ \[p(R|\hat{\textbf{s}}) \propto (1-\gamma_{12})(1-\gamma_{13})...(1-\gamma_{1N})p(\hat{s}_1|R)...\]
+ 
+ \[(1-\gamma_{N1})(1-\gamma_{N2})...(1-\gamma_{NN-1})p(\hat{s}_N|R)p(R)\]
  
  We propose that this may be used as a measure to estimate the actual truth of a given state of the world.
   One implication of this proposal is that we are more certain about the state of the world the more dispersed a set of signals are.  To see this consider a simple two agent case.
@@ -211,8 +213,33 @@ Variants of LDA have seen a great deal of success for modeling the popularity of
 
 This generation procedure allows the distribution of topics to change over time, accounting for shifts in the content of documents.  Such a model is important for the dataset we wish to use where topics are changing regularly.  We use a variant of the Dynamic Topic Model that allows for the distribution of $\alpha_{it}$ to be impacted by $\alpha_{-it-1}$.  That is we assume that the underlying topic distribution is ultimately effected by the topic distributions for other agents in a network of agents.  More formally we say that,
 
-\[\alpha_{it} \sim N(\textbf{\alpha}_{t-1}^T \gamma, \delta^2I)\]
+\[\alpha_{it} \sim N(\alpha_{t-1}^T \gamma, \delta^2I)\]
 
-$\textbf{\alpha}$ is a vector of the $\alpha$ parameter for each of the $N$ agents, and $\gamma$ is an $N$ dimensional vector of weights for the $N$ agents.  That is, $\alpha_{it}$ is drawn from a weighted sum of the $\alpha$ values for each agent in the prior period.  $\gamma$ gives an estimate of the impact that each agent has on the topic distribution of the $i$th agent.  We use $\gamma$ to represent our trust value discussed above.  Unfortunately, this generating process does not have a conjugate form so we cannot using Gibbs sampling as used commonly with LDA.  Instead we must use a more complicated Metropolis Hastings algorithm to estimate $\gamma$.
+$\alpha$ is a vector of the $\alpha$ parameter for each of the $N$ agents, and $\gamma$ is an $N$ dimensional vector of weights for the $N$ agents.  That is, $\alpha_{it}$ is drawn from a weighted sum of the $\alpha$ values for each agent in the prior period.  $\gamma$ gives an estimate of the impact that each agent has on the topic distribution of the $i$th agent.  We use $\gamma$ to represent our trust value discussed above.  Unfortunately, this generating process does not have a conjugate form so we cannot using Gibbs sampling as used commonly with LDA.  Instead we must use a more complicated Metropolis Hastings algorithm to estimate $\gamma$.
+
+\newpage
+\appendix
+
+\section{Full Conditionals}
+
+\[p(\gamma_i | \mu, \xi^2) = N(\mu, \xi^2I)\]
+
+\[p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}. \gamma_i, \delta^2) = N(\text{\boldmath$\alpha$}^T_{t-1} \gamma_i, \delta^2I)\]
+
+\[p(\beta_t | \beta_{t-1}, \sigma^2) = N(\beta_{t-1}, \sigma^2I)\]
+
+\[p(\theta_{itd} | \alpha_{it}, a^2) = N(\alpha_{it}, a^2)\] 
+
+\[p(z_{itnd}| \theta_{itd}) = Mult(\pi(\theta_{itd}))\]
+
+\[p(w_{itnd} | \beta_t, z_{itnd}) = Mult(\pi(\beta_t^{z_{itnd}}))\]
+
+\[p(\theta, \text{\boldmath$\gamma$}, \text{\boldmath$\alpha$}, \text{\boldmath$\beta$}, \textbf{z} | \textbf{w}) \propto \prod_{i=1}^M \prod_{t=1}^T \prod_{n=1}^N \prod_{d=1}^D p(w_{itnd}|z_{itnd}, \beta_t) p(\beta_t | \beta_{t-1}, \sigma^2) p(z_{itnd}|\theta_{itd})\]
+
+\[p(\theta_{itd}|\alpha_{it},a^2)p(\alpha_{it}|\text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, \xi^2)\]
+
+
+
+\subsection{Posterior Specification for $z_i$}
 
 \end{document}
