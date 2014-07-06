@@ -228,18 +228,60 @@ $\alpha$ is a vector of the $\alpha$ parameter for each of the $N$ agents, and $
 
 \[p(\beta_t | \beta_{t-1}, \sigma^2) = N(\beta_{t-1}, \sigma^2I)\]
 
-\[p(\theta_{itd} | \alpha_{it}, a^2) = N(\alpha_{it}, a^2)\] 
+\[p(\theta | \alpha_{it}, a^2) = N(\alpha_{it}, a^2I)\] 
 
-\[p(z_{itnd}| \theta_{itd}) = Mult(\pi(\theta_{itd}))\]
+\[p(\phi | \beta_t, b^2) = N(\beta_t, b^2I)\]
 
-\[p(w_{itnd} | \beta_t, z_{itnd}) = Mult(\pi(\beta_t^{z_{itnd}}))\]
+\[p(z| \theta) = Mult(\pi(\theta))\]
 
-\[p(\theta, \text{\boldmath$\gamma$}, \text{\boldmath$\alpha$}, \text{\boldmath$\beta$}, \textbf{z} | \textbf{w}) \propto \prod_{i=1}^M \prod_{t=1}^T \prod_{n=1}^N \prod_{d=1}^D p(w_{itnd}|z_{itnd}, \beta_t) p(\beta_t | \beta_{t-1}, \sigma^2) p(z_{itnd}|\theta_{itd})\]
+\[p(w | \phi, z) = Mult(\pi(\phi_z))\]
 
-\[p(\theta_{itd}|\alpha_{it},a^2)p(\alpha_{it}|\text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, \xi^2)\]
-
-
+\[p(\theta, \phi, \gamma_i, \alpha_{it}, \beta_t, z | w) \propto p(w | \phi, z) p(\phi |  \beta_t, b^2)  p(z | \theta)  p(\beta_t | \beta_{t-1}, \sigma^2) p(\theta | \alpha_{it}, a^2) p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, xi^2)\]
 
 \subsection{Posterior Specification for $z_i$}
+
+\[p(z_i | w_i, \theta, \phi) \propto p(z_i = k | \theta) p(w_i | z_i = k, \phi)\]
+
+\[= \frac{\theta_k}{\sum_k \theta} \frac{\phi_{k, w_i}}{\sum_v \phi_k}\]
+
+\subsection{Posterior Specification for $\beta_t$}
+
+\[p(\beta_t | \phi, \beta_{t-1}, b^2, \sigma^2) \propto p(\phi | \beta_t) p(\beta_t | \beta_{t-1})\]
+
+\[= N(\beta_t, b^2I) N(\beta_{t-1}, \sigma^2I)\]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+
+\subsection{Posterior Specification for $\alpha_t$}
+
+\[p(\alpha_{it} | \theta, \text{\boldmath$\alpha$}_{t-1}, \gamma_i, a^2, \delta^2) \propto p(\theta | \alpha_{it}) p(\alpha_t | \text{\boldmath$\alpha$}, \gamma_i)\]
+
+\[= N(\alpha_{it}, a^2I) N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)\]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+
+\subsection{Posterior Specification for $\gamma$}
+
+\[p(\gamma_i | \alpha_{it}, \text{\boldmath$\alpha$}_{t-1}, \mu, \xi^2) \propto p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, \xi^2)\]
+
+\[= N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)N(\mu, \xi^2)\]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+
+\subsection{Posterior Specification for $\theta$}
+
+\[p(\theta | z, \alpha_{it}, \delta^2) \propto p(z | \theta) p(\theta | \alpha_{it}, \delta^2)\]
+
+\[= Mult(\pi(\theta)) N(\alpha_{it}, \delta^2I)\]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+
+\subsection{Posterior Specification for $\phi$}
+
+\[p(\phi_k | \beta_t, z, w, b^2) \propto p(w | \phi_k, z) p(\phi_k | \beta_t)\]
+
+\[= Mult(\pi(phi_{k,z})) N(\beta_t, b^2)\]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
 
 \end{document}
