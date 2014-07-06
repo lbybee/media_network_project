@@ -1,5 +1,6 @@
 from BeautifulSoup import BeautifulSoup
 import cPickle
+import unicodecsv
 from datetime import datetime
 import requests
 import time
@@ -83,6 +84,27 @@ def getArticle(url, a_url):
     doc = slate.PDF(input_)
     article_dict["text"] = doc
     return article_dict
+
+
+def writeArticleDictCSV(article, csv_f):
+    """writes the specified article to a csv"""
+
+    f = open(csv_f, "ab")
+    writer = unicodecsv.writer(f)
+    writer.writerow(article.values())
+    f.close()
+
+
+def getArticles(article_url_f, url, t_sleep, output_csv, start_ind):
+    """gets the articles from a list of urls"""
+
+    article_urls = cPickle.load(open(article_url_f, "rb"))
+    ln = len(article_urls)
+    t_1 = datetime.now()
+    for i, a in enumerate(article_urls[start_ind:]):
+        article = getArticle(url, a)
+        writeArticleDictCSV(article, output_csv)
+        print start_ind + i, (start_ind + i) * 100. / ln, datetime.now() - t_1
 
 
 def fullRun(url, t_sleep, url_f, output_f, backup_f, start_ind, urls=True):
