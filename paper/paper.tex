@@ -8,7 +8,7 @@
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 
-\title{Social Learning in the Media: The Importance of Bias for Trust Between Media Firms}
+\title{DRAFT: Social Learning and Shared Belief: The Importance of Bias and Trust for Information Diffusion}
 \author{Bryan Kelly, Joseph Leland Bybee}
 \date{\today}
 
@@ -16,17 +16,21 @@
 
 \maketitle
 
+\begin{abstract}
+
+We investigate the impact that bias and trust has on how information is diffused within a network of agents.  We use this model to investigate the information diffusion characteristics of 2 different data sets.  We also use our measures of trust to estimate some probability for the real state of the world.  Additionally, we estimate whether certain agents are higher quality than others based on how well they are trusted.  Finally, we consider a measure of risk aversion related to how willing agents are to trust each other.
+
+\end{abstract}
+
 \section{Introduction}
 
-The problem.  The media is important to determine what people know about the world.  How the media gets its information is important as a result.  When media firms aren't getting information from their reporters they are getting information from other news firms.
+Individuals often rely on the information and decisions of other individuals and companies to inform their understanding about how the world works.  Consider the case two competing newspapers, firm A and B.  If firm A sees a report about corruption at City Hall from firm B, this may influence what firm A publishes the next day and where they dedicate their investigative resources.  This influence may be related to how much firm A trusts the reporting of firm B and how similar their beliefs about the world are.
 
-Our goal is to develop a model of media trust that accounts for trust in the media and how different media firms learn from each other.  Our model allows us to develop a network of trust between different media firms that allows for information diffusion between media firms. 
+We consider a general model of social learning, motivated by the above hypothetical, where agents learn from other agents in their network based on how much they trust the other agents.  We investigate the importance of this trust network to information diffusion and use it to help develop estimates of the actual state of the world and quality of different agents in the network. 
 
-We examine two novel data sets to investigate this model, the first is a data set of tweets for a list of 3000 media firms in the United States from June to August of 2014.  Additionally, we consider a data set of articles taken from the free archive ArXiv.  We build a trust network for both of these data sets based on a number of different measures of bias and use this to investigate our model. NOTE: Obviously, if we are going to include this second dataset the problem will be generalized beyond media firms to some idea of "information agents".
+We examine two novel data sets to investigate this model, the first is a data set of tweets for a list of roughly 3000 media firms in the United States from June to August of 2014.  Additionally, we consider a data set of articles taken from the preprint repository ArXiv.  We build a trust network for both of these data sets based on a number of different measures of bias and use this to investigate our model. To investigate this model we use a graphical variant of the dynamic topic model to estimate trust between agents.
 
-We specify our model using a topic model comparable to the popular topic modeling approach, Latent Dirichlet Allocation (LDA).  We uses this to estimate the amount of information that different firms get from each other and uses this as an estimate of trust.
-
-We consider 5 predictions.  First, firms that share common beliefs are more likely to trust each other.  Second, firms that share common beliefs will communicate information faster.  Third, higher quality firms are more likely to be trusted by all firms.  Fourth, information that originates from multiple distance media sources is more likely to be accurate.  Fifth, neutral media sources are important in order to connect different biased groups. 
+We consider 5 predictions.  First, firms that share common beliefs are more likely to trust each other.  Second, firms that share common beliefs will communicate information faster.  Third, higher quality firms are more likely to be trusted by all firms.  Fourth, information that originates from multiple distance media sources is more likely to be accurate.  Fifth, neutral media sources are important to the complete diffusion of information. 
 
 The paper is grouped as follows.  Section 2 presents the prior literature.  Section 3 develops the model used throughout.  Section 4 covers the data sets used.  Section 5 covers the implementation of the model.  Section 6 presents the results.  Finally, Section 7 summarizes and concludes.
 
