@@ -246,59 +246,59 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[p(\theta, \phi, \gamma_i, \alpha_{it}, \beta_t, z | w) \propto p(w | \phi, z) p(\phi |  \beta_t, b^2)  p(z | \theta)  p(\beta_t | \beta_{t-1}, \sigma^2) p(\theta | \alpha_{it}, a^2) p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, xi^2)\]
 
-\subsection{Posterior Specification for $z_i$}
+\subsection{Posterior Specification for $z_{jit}$}
 
-\[p(z_i | w_i, \theta, \phi) \propto p(z_i = k | \theta) p(w_i | z_i = k, \phi)\]
+\[p(z_{jit} | w_{jit}, \theta_{it}, \phi_t) \propto p(z_{jit} = k | \theta_{it}) p(w_{jit} | z_{jit} = k, \phi_t)\]
 
-\[= \frac{\theta_k}{\sum_k \theta} \frac{\phi_{k, w_i}}{\sum_v \phi_k}\]
+\[= \frac{\theta_{it}^{I_{z_{jit}}=k}}{\sum_k \theta_{it}} \frac{\phi_{kt}^{I_{w_j}=v}}{\sum_v \phi_{kt}}\]
 
 \subsection{Posterior Specification for $\beta_t$}
 
 \[p(\beta_t | \phi, \beta_{t-1}, b^2, \sigma^2) \propto p(\phi | \beta_t) p(\beta_t | \beta_{t-1})\]
 
-\[= N(\beta_t, b^2I) N(\beta_{t-1}, \sigma^2I)\]
+\[=  \prod_{k=1}^K N(\beta_t, b^2I) N(\beta_{t-1}, \sigma^2I)\]
 
-\[\propto \exp{\left(-\frac{1}{2}[(\phi - \beta_t)^T(\phi - \beta_t) + (\beta_t - \beta_{t-1})^T(\beta_t - \beta_{t-1})]\right)}\]
+\[\propto \exp{\left(\sum_{k=1}^K(\phi_k - \beta_{t})^T(\phi_k - \beta_{t}) + (\beta_{t} - \beta_{t-1})^T(\beta_{t} - \beta_{t-1})\right)}\]
 
 Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
 
-\subsection{Posterior Specification for $\alpha_t$}
+\subsection{Posterior Specification for $\alpha_{it}$}
 
 \[p(\alpha_{it} | \theta, \text{\boldmath$\alpha$}_{t-1}, \gamma_i, a^2, \delta^2) \propto p(\theta | \alpha_{it}) p(\alpha_t | \text{\boldmath$\alpha$}, \gamma_i)\]
 
-\[= N(\alpha_{it}, a^2I) N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)\]
+\[= \prod_{d=1}^{D_i} N(\alpha_{it}, a^2I) N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)\]
 
-\[\propto \exp{\left(-\frac{1}{2}[(\theta - \alpha_{it})^T(\theta - \alpha_{it}) + (\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)]\right)}\]
+\[\propto \exp{\left(\sum_{d=1}^{D_i}(\theta_d - \alpha_{it})^T(\theta_d - \alpha_{it}) + (\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)\right)}\]
 
 Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
 
-\subsection{Posterior Specification for $\gamma$}
+\subsection{Posterior Specification for $\gamma_i$}
 
 \[p(\gamma_i | \alpha_{it}, \text{\boldmath$\alpha$}_{t-1}, \mu, \xi^2) \propto p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, \xi^2)\]
 
-\[= N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)N(\mu, \xi^2)\]
+\[= \prod_{t=2}^T N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)N(\mu, \xi^2)\]
 
-\[\propto \exp{\left(-\frac{1}{2}[(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i) + (\gamma_i - \mu)^T(\gamma_i - \mu)]\right)}\]
-
-Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
-
-\subsection{Posterior Specification for $\theta$}
-
-\[p(\theta | z, \alpha_{it}, \delta^2) \propto p(z | \theta) p(\theta | \alpha_{it}, \delta^2)\]
-
-\[= Mult(\pi(\theta)) N(\alpha_{it}, \delta^2I)\]
-
-\[\propto \left(\prod_{i=1}^N \prod_{k=1}^K \frac{\theta_k^{I_{z_i}=k}}{\sum_k \theta}\right) \left(\exp{-\frac{1}{2}(\theta - \alpha_{it})^T(\theta - \alpha_{it})}\right) \]
+\[\propto \exp{\left(\sum_{t=2}^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i) + (\gamma_i - \mu)^T(\gamma_i - \mu)\right)}\]
 
 Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
 
-\subsection{Posterior Specification for $\phi$}
+\subsection{Posterior Specification for $\theta_{it}$}
 
-\[p(\phi_k | \beta_t, z, w, b^2) \propto p(w | \phi_k, z) p(\phi_k | \beta_t)\]
+\[p(\theta_{it} | z, \alpha_{it}, \delta^2) \propto p(z | \theta_{it}) p(\theta_{it} | \alpha_{it}, \delta^2)\]
 
-\[= Mult(\pi(phi_{k,z})) N(\beta_t, b^2)\]
+\[= \prod_{d=1}^D \prod_{j=1}^{J_d} Mult(\pi(\theta_{dit}))\prod_{d=1}^D N(\alpha_{it}, \delta^2I)\]
 
-\[\propto \left(\prod_{i:z_i=k}^N \prod_{v=1}^V \frac{\phi_{k, v}^{I_{w_i}=v}}{\sum_v \phi_k}\right) \left(\exp{-\frac{1}{2}(\phi_k - \beta_t)^T(\phi_k - \beta_t)}\right) \]
+\[\propto \left(\prod_{d=1}^D \prod_{j=1}^{J_d} \frac{\theta_{dit}^{I_{z_j}=k}}{\sum_k \theta_{dit}}\right) \exp{\left(\sum_{d=1}^D(\theta_{dit} - \alpha_{it})^T(\theta_{dit} - \alpha_{it})\right)} \]
+
+Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+
+\subsection{Posterior Specification for $\phi_t$}
+
+\[p(\phi_t | \beta_t, z, w, b^2) \propto p(w | \phi_t, z) p(\phi_t | \beta_t)\]
+
+\[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(\pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, b^2)\]
+
+\[\propto \left(\prod_{k=1}^K \prod_{j=1}^{J_k} \frac{\phi_{kt}^{I_{w_j}=v}}{\sum_v \phi_{kt}}\right) \exp{\left(\sum_{k=1}^K(\phi_{kt} - \beta_t)^T(\phi_{kt} - \beta_t)\right)}\]
 
 Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
 
