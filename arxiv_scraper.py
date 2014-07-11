@@ -72,14 +72,18 @@ def getArticle(url, a_url):
     article_dict["date"] = soup.find("div", {"class": "dateline"}).text
     article_dict["sub_hist"] = [a.text for a in
                                 soup.find("div", {"class": "submission-history"}).findAll("br")]
-    # write the pdf to the correct file
-    l_name = a_url.split("/")[-1]
-    article_dict["link"] = l_name
-    f_name = l_name + ".pdf"
-    pdf = open(f_name, "wb")
-    pdf_url = soup.find("div", {"class": "full-text"}).find("ul").find("li").find("a")["href"] 
-    pdf.write(requests.get(url + pdf_url).content)
-    pdf.close()
+    if soup.find("blockquote") is not None:
+        article_dict["abstract"] = soup.find("blockquote").text
+    else:
+        article_dict["abstract"] = None
+    # # write the pdf to the correct file
+    # l_name = a_url.split("/")[-1]
+    # article_dict["link"] = l_name
+    # f_name = l_name + ".pdf"
+    # pdf = open(f_name, "wb")
+    # pdf_url = soup.find("div", {"class": "full-text"}).find("ul").find("li").find("a")["href"] 
+    # pdf.write(requests.get(url + pdf_url).content)
+    # pdf.close()
     # # extract the text from the pdf
     # input_ = open(f_name, "rb")
     # doc = slate.PDF(input_)
