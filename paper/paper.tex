@@ -292,20 +292,16 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[p(\theta_{it} | z, \alpha_{it}, \delta^2) \propto p(z | \theta_{it}) p(\theta_{it} | \alpha_{it}, \delta^2)\]
 
-\[= \prod_{d=1}^D \prod_{j=1}^{J_d} Mult(\pi(\theta_{dit}))\prod_{d=1}^D N(\alpha_{it}, \delta^2I)\]
+\[= \prod_{d=1}^{D_i} \prod_{j=1}^{J_d} Mult(z_{jdit}; \pi(\theta_{dit}))\prod_{d=1}^{D_i} N(\alpha_{it}, \delta^2I)\]
 
-\[\propto \left(\prod_{d=1}^D \prod_{j=1}^{J_d} \frac{\theta_{dit}^{I_{z_j}=k}}{\sum_k \theta_{dit}}\right) \exp{\left(\sum_{d=1}^D(\theta_{dit} - \alpha_{it})^T(\theta_{dit} - \alpha_{it})\right)} \]
-
-Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+Since this doesn't have a standard form we use a slice sampler to sample from the full conditional.
 
 \subsection{Posterior Specification for $\phi_t$}
 
 \[p(\phi_t | \beta_t, z, w, b^2) \propto p(w | \phi_t, z) p(\phi_t | \beta_t)\]
 
-\[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(\pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, b^2)\]
+\[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(w_{jkt}; \pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, b^2)\]
 
-\[\propto \left(\prod_{k=1}^K \prod_{j=1}^{J_k} \frac{\phi_{kt}^{I_{w_j}=v}}{\sum_v \phi_{kt}}\right) \exp{\left(\sum_{k=1}^K(\phi_{kt} - \beta_t)^T(\phi_{kt} - \beta_t)\right)}\]
-
-Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+Since this doesn't have a standard form we use a slice sampler to sample from the full conditional.
 
 \end{document}
