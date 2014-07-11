@@ -98,7 +98,7 @@ def writeArticleDictCSV(article, csv_f):
 def getArticles(article_url_f, url, t_sleep, output_csv, start_ind):
     """gets the articles from a list of urls"""
 
-    article_urls = cPickle.load(open(article_url_f, "rb"))
+    article_urls = open(article_url_f, "rb").read().split("\n")[:-1]
     ln = len(article_urls)
     t_1 = datetime.now()
     for i, a in enumerate(article_urls[start_ind:]):
