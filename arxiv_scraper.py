@@ -3,6 +3,7 @@ import cPickle
 import unicodecsv
 from datetime import datetime
 import requests
+# import slate
 import time
 
 
@@ -79,10 +80,10 @@ def getArticle(url, a_url):
     pdf_url = soup.find("div", {"class": "full-text"}).find("ul").find("li").find("a")["href"] 
     pdf.write(requests.get(url + pdf_url).content)
     pdf.close()
-    # extract the text from the pdf
-    input_ = open(f_name, "rb")
-    doc = slate.PDF(input_)
-    article_dict["text"] = doc
+    # # extract the text from the pdf
+    # input_ = open(f_name, "rb")
+    # doc = slate.PDF(input_)
+    # article_dict["text"] = doc
     return article_dict
 
 
