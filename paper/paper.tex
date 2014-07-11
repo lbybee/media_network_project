@@ -256,35 +256,37 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[p(\beta_t | \phi_t, \beta_{t-1}, b^2, \sigma^2) \propto \prod_{k=1}^K p(\phi_{kt} | \beta_t) p(\beta_t | \beta_{t-1})\]
 
-\[= \prod_{k=1}^K N(\phi_{kt};\beta_t, b^2I) N(\beta_{t-1}, \sigma^2I)\]
+\[= \prod_{k=1}^K N(\phi_{kt};\beta_t, b^2) N(\beta_{t-1}, \sigma^2)\]
 
 \[\propto N(\mu_{\beta t}, \Lambda_{\beta t})\]
 
-\[\Lambda_{\beta t} = ((\sigma^2I)^{-1} + k (b^2I)^{-1})^{-1}\]
+\[\Lambda_{\beta t} = ((\sigma^2)^{-1} + k (b^2)^{-1})^{-1}\]
 
-\[\mu_{\beta t} = \Lambda_{\beta t} \left((\sigma^2I)^{-1}\beta_{t-1} + k (b^2I)^{-1} \sum_{k=1}^K \phi_{kt}\right) \]
+\[\mu_{\beta t} = \Lambda_{\beta t} \left((\sigma^2)^{-1}\beta_{t-1} + k (b^2)^{-1} \sum_{k=1}^K \phi_{kt}\right) \]
 
 \subsection{Posterior Specification for $\alpha_{it}$}
 
 \[p(\alpha_{it} | \theta_{it}, \text{\boldmath$\alpha$}_{t-1}, \gamma_i, a^2, \delta^2) \propto \prod_{k=1}^K p(\phi_{kt} | \beta_t) p(\beta_t | \beta_{t-1})\]
 
-\[= \prod_{d=1}^{D_i} N(\theta_{dit};\alpha_{it}, a^2I) N(\text{\boldmath$\alpha$}_{t-1}\gamma_i, \delta^2I)\]
+\[= \prod_{d=1}^{D_i} N(\theta_{dit};\alpha_{it}, a^2) N(\text{\boldmath$\alpha$}_{t-1}\gamma_i, \delta^2)\]
 
 \[\propto N(\mu_{\alpha i t}, \Lambda_{\alpha i t})\]
 
-\[\Lambda_{\alpha i t} = ((\delta^2I)^{-1} + d_i (a^2I)^{-1})^{-1}\]
+\[\Lambda_{\alpha i t} = ((\delta^2)^{-1} + d_i (a^2)^{-1})^{-1}\]
 
-\[\mu_{\alpha i t} = \Lambda_{\alpha i t} \left((\delta^2I)^{-1}\text{\boldmath$\alpha$}_{t-1} \gamma_i + d_i (a^2I)^{-1} \sum_{d=1}^{D_i} \theta_{dit}\right) \]
+\[\mu_{\alpha i t} = \Lambda_{\alpha i t} \left((\delta^2)^{-1}\text{\boldmath$\alpha$}_{t-1} \gamma_i + d_i (a^2)^{-1} \sum_{d=1}^{D_i} \theta_{dit}\right) \]
 
 \subsection{Posterior Specification for $\gamma_i$}
 
-\[p(\gamma_i | \alpha_{it}, \text{\boldmath$\alpha$}_{t-1}, \mu, \xi^2) \propto p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, \xi^2)\]
+\[p(\gamma_i | \text{\boldmath$\alpha$}_{i}, \text{\boldmath$\alpha$}_{-1}, \eta, \xi^2) \propto p(\text{\boldmath$\alpha$}_i | \text{\boldmath$\alpha$}_{-1}, \gamma_i, \delta^2) p(\gamma_i | \eta, \xi^2)\]
 
-\[= \prod_{t=2}^T N(\text{\boldmath$\alpha$}_{t-1}^T \gamma_i, \delta^2I)N(\mu, \xi^2)\]
+\[= N(\text{\boldmath$\alpha$}_{i};\text{\boldmath$\alpha$}_{-1}^T \gamma_i, \delta^2)N(\eta, \xi^2)\]
 
-\[\propto \exp{\left(\sum_{t=2}^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i)^T(\alpha_{it} - \text{\boldmath$\alpha$}_{t-1}^T \gamma_i) + (\gamma_i - \mu)^T(\gamma_i - \mu)\right)}\]
+\[\propto N(\mu_{\gamma i}, \Lambda_{\gamma i})\]
 
-Since this doesn't have a standard form we use Metropolis Hastings to estimate the full conditional.
+\[\Lambda_{\gamma i} = \left((\xi^2)^{-1} + \text{\boldmath$\alpha$}_{-1}^T(\delta^2)^{-1}\text{\boldmath$\alpha$}_{-1}\right)^{-1}\]
+
+\[\mu_{\gamma i} = \Lambda_{\gamma i} \left((\xi^2)^{-1} \eta + \text{\boldmath$\alpha$}_{-1}^T(\delta^2)^{-1}\text{\boldmath$\alpha$}_{i}\right)\]
 
 \subsection{Posterior Specification for $\theta_{it}$}
 
