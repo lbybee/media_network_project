@@ -230,21 +230,25 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \section{Full Conditionals}
 
-\[p(\gamma_i | \mu, \xi^2) = N(\mu, \xi^2I)\]
+\[p(\gamma_i | \mu, \xi^2) = N(\eta, \xi^2)\]
 
-\[p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}. \gamma_i, \delta^2) = N(\text{\boldmath$\alpha$}^T_{t-1} \gamma_i, \delta^2I)\]
+\[p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) = N(\text{\boldmath$\alpha$}^T_{t-1} \gamma_i, \delta^2)\]
 
-\[p(\beta_t | \beta_{t-1}, \sigma^2) = N(\beta_{t-1}, \sigma^2I)\]
+\[p(\beta_t | \beta_{t-1}, \sigma^2) = N(\beta_{t-1}, \sigma^2)\]
 
-\[p(\theta | \alpha_{it}, a^2) = N(\alpha_{it}, a^2I)\] 
+\[p(\theta | \alpha_{it}, a^2) = N(\alpha_{it}, a^2)\] 
 
-\[p(\phi | \beta_t, b^2) = N(\beta_t, b^2I)\]
+\[p(\phi | \beta_t, b^2) = N(\beta_t, b^2)\]
+
+\[p(a^2 | \nu_0, \tau_0) = IW(\nu_0, \tau_0)\]
+
+\[p(b^2 | \nu_1, \tau_1) = IW(\nu_1, \tau_1)\]
 
 \[p(z| \theta) = Mult(\pi(\theta))\]
 
 \[p(w | \phi, z) = Mult(\pi(\phi_z))\]
 
-\[p(\theta, \phi, \gamma_i, \alpha_{it}, \beta_t, z | w) \propto p(w | \phi, z) p(\phi |  \beta_t, b^2)  p(z | \theta)  p(\beta_t | \beta_{t-1}, \sigma^2) p(\theta | \alpha_{it}, a^2) p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \mu, xi^2)\]
+\[p(\theta, \phi, \gamma, \alpha, \beta, z | w) \propto \prod_{t=1}^T \prod_{i=1}^N \prod_{d=1}^{D_i} \prod_{j=1}^{J_d} \prod_{k=1}^K p(w_{jit} | \phi_k, z_{jit}) p(\phi_k | \beta_t, b^2) p(b^2 | \nu_1, \tau_1) p(z_{jit} | \theta_{dit}) p(\beta_t | \beta_{t-1}, \sigma^2) p(\theta_{dit} | \alpha_{it}, a^2) p(\alpha_{it} | \text{\boldmath$\alpha$}_{t-1}, \gamma_i, \delta^2) p(\gamma_i | \eta, xi^2)\]
 
 \subsection{Posterior Specification for $z_{jit}$}
 
