@@ -70,8 +70,7 @@ def getArticle(url, a_url):
     article_dict["authors"] = [a.text for a in
                                soup.find("div", {"class": "authors"}).findAll("a")]
     article_dict["date"] = soup.find("div", {"class": "dateline"}).text
-    article_dict["sub_hist"] = [a.text for a in
-                                soup.find("div", {"class": "submission-history"}).findAll("br")]
+    article_dict["sub_hist"] = soup.find("div", {"class": "submission-history"}).text
     if soup.find("blockquote") is not None:
         article_dict["abstract"] = soup.find("blockquote").text
     else:
@@ -110,6 +109,7 @@ def getArticles(article_url_f, url, t_sleep, output_csv, start_ind):
         article = getArticle(url, a)
         writeArticleDictCSV(article, output_csv)
         print start_ind + i, (start_ind + i) * 100. / ln, datetime.now() - t_1
+        time.sleep(t_sleep)
 
 
 def fullRun(url, t_sleep, url_f, output_f, backup_f, start_ind, urls=True):
