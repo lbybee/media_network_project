@@ -300,15 +300,25 @@ This needs to be fixed
 
 \subsection{Posterior Specification for $\gamma_i$}
 
+\[p(\text{\boldmath$\alpha$}_i | \text{\boldmath$\alpha$}_{-1}, \gamma_i, \delta^2) = \prod_{t=2}^T p(\alpha_{it} | \alpha_{t-1}, \gamma_i, \delta^2)\]
+
+\[= \frac{1}{\sqrt{2 \pi \delta^2}} \exp\left(-\frac{1}{2\delta^2} \sum_{t=2}^T \left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)^2\right)\]
+
 \[p(\gamma_i | \text{\boldmath$\alpha$}_{i}, \text{\boldmath$\alpha$}_{-1}, \eta, \xi^2) \propto p(\text{\boldmath$\alpha$}_i | \text{\boldmath$\alpha$}_{-1}, \gamma_i, \delta^2) p(\gamma_i | \eta, \xi^2)\]
 
-\[= N(\text{\boldmath$\alpha$}_{i};\text{\boldmath$\alpha$}_{-1}^T \gamma_i, \delta^2)N(\eta, \xi^2)\]
+\[\propto \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)^2\right) \exp\left(-\frac{1}{2\xi^2}\left(\gamma_i - \eta)^2\right)\right)\]
+
+\[= \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\alpha_{it}^2 + \left(\alpha_{t-1}^T \gamma_i\right)^2 - 2 \alpha_{it} \alpha_{t-1}^T \gamma_i \right)\right) \exp\left(-\frac{1}{2\xi^2}\left(\gamma_i^2 + \eta^2 - 2 \gamma_i \eta)\right)\right)\]
+
+\[= \exp\left(- \frac{\gamma_i^2}{2}\left(\frac{1}{\xi^2} + \frac{\left(\sum_{t=2}^T \alpha_{t-1}^T\right)^T\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right)\right)\]
+
+\[\exp\left(\gamma_i \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right) - \left(\frac{\eta^T \eta}{2\xi^2} + \frac{\left(\sum_{t=2}^T \alpha_{it}\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{2 \delta^2}\right)\right)\]
 
 \[\propto N(\mu_{\gamma i}, \Lambda_{\gamma i})\]
 
-\[\Lambda_{\gamma i} = \left((\xi^2)^{-1} + \text{\boldmath$\alpha$}_{-1}^T(\delta^2)^{-1}\text{\boldmath$\alpha$}_{-1}\right)^{-1}\]
+\[\Lambda_{\gamma i} = \left(\frac{1}{\xi^2}+ \frac{\left(\sum_{t=2}^T \alpha_{t-1}^T\right)^T\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right)^{-1}\]
 
-\[\mu_{\gamma i} = \Lambda_{\gamma i} \left((\xi^2)^{-1} \eta + \text{\boldmath$\alpha$}_{-1}^T(\delta^2)^{-1}\text{\boldmath$\alpha$}_{i}\right)\]
+\[\mu_{\gamma i} = \Lambda_{\gamma i} \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right)\]
 
 \subsection{Posterior Specification for $\theta_{it}$}
 
