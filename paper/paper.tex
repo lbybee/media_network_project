@@ -300,23 +300,23 @@ This needs to be fixed
 
 \subsection{Posterior Specification for $\gamma_i$}
 
+Let $\Xi(x) = x^Tx$
+
 \[p(\text{\boldmath$\alpha$}_i | \text{\boldmath$\alpha$}_{-1}, \gamma_i, \delta^2) = \prod_{t=2}^T p(\alpha_{it} | \alpha_{t-1}, \gamma_i, \delta^2)\]
 
-\[= \frac{1}{\sqrt{2 \pi \delta^2}} \exp\left(-\frac{1}{2\delta^2} \sum_{t=2}^T \left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)^2\right)\]
+\[= \frac{1}{\sqrt{2 \pi \delta^2}} \exp\left(-\frac{1}{2\delta^2} \sum_{t=2}^T \Xi\left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)\right)\]
 
 \[p(\gamma_i | \text{\boldmath$\alpha$}_{i}, \text{\boldmath$\alpha$}_{-1}, \eta, \xi^2) \propto p(\text{\boldmath$\alpha$}_i | \text{\boldmath$\alpha$}_{-1}, \gamma_i, \delta^2) p(\gamma_i | \eta, \xi^2)\]
 
-\[\propto \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)^2\right) \exp\left(-\frac{1}{2\xi^2}\left(\gamma_i - \eta)^2\right)\right)\]
+\[\propto \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \Xi\left(\alpha_{it} - \alpha_{t-1}^T \gamma_i\right)\right) \exp\left(-\frac{1}{2\xi^2}\Xi\left(\gamma_i - \eta\right)\right)\]
 
-\[= \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\alpha_{it}^2 + \left(\alpha_{t-1}^T \gamma_i\right)^2 - 2 \alpha_{it} \alpha_{t-1}^T \gamma_i \right)\right) \exp\left(-\frac{1}{2\xi^2}\left(\gamma_i^2 + \eta^2 - 2 \gamma_i \eta)\right)\right)\]
+\[= \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\Xi(\alpha_{it}) + \Xi\left(\alpha_{t-1}^T \gamma_i\right) - 2 \alpha_{it}^T (\alpha_{t-1}^T \gamma_i) \right)\right) \exp\left(-\frac{1}{2\xi^2}\left(\Xi(\gamma_i) + \Xi(\eta) - 2 \gamma_i^T \eta)\right)\right)\]
 
-\[= \exp\left(- \frac{\gamma_i^2}{2}\left(\frac{1}{\xi^2} + \frac{\left(\sum_{t=2}^T \alpha_{t-1}^T\right)^T\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right)\right)\]
-
-\[\exp\left(\gamma_i \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right) - \left(\frac{\eta^T \eta}{2\xi^2} + \frac{\left(\sum_{t=2}^T \alpha_{it}\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{2 \delta^2}\right)\right)\]
+\[= \exp\left(- \frac{\gamma_i^2}{2}\left(\frac{1}{\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right) + \gamma_i \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right) - \left(\frac{\eta^T \eta}{2\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{it}\right)}{2 \delta^2}\right)\right)\]
 
 \[\propto N(\mu_{\gamma i}, \Lambda_{\gamma i})\]
 
-\[\Lambda_{\gamma i} = \left(\frac{1}{\xi^2}+ \frac{\left(\sum_{t=2}^T \alpha_{t-1}^T\right)^T\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right)^{-1}\]
+\[\Lambda_{\gamma i} = \left(\frac{1}{\xi^2}+ \frac{\Xi\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right)^{-1}\]
 
 \[\mu_{\gamma i} = \Lambda_{\gamma i} \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right)\]
 
