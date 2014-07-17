@@ -312,7 +312,7 @@ Let $\Xi(x) = x^Tx$
 
 \[= \exp\left(-\frac{1}{2 \delta^2} \sum_{t=2}^T \left(\Xi(\alpha_{it}) + \Xi\left(\alpha_{t-1}^T \gamma_i\right) - 2 \alpha_{it}^T (\alpha_{t-1}^T \gamma_i) \right)\right) \exp\left(-\frac{1}{2\xi^2}\left(\Xi(\gamma_i) + \Xi(\eta) - 2 \gamma_i^T \eta)\right)\right)\]
 
-\[= \exp\left(- \frac{\gamma_i^2}{2}\left(\frac{1}{\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right) + \gamma_i \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right) - \left(\frac{\eta^T \eta}{2\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{it}\right)}{2 \delta^2}\right)\right)\]
+\[= \exp\left(- \frac{\gamma_i^2}{2}\left(\frac{1}{\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{t-1}^T\right)}{\delta^2}\right) + \gamma_i \left(\frac{\eta}{\xi^2} + \frac{\left(\sum_{t=1}^T \alpha_{t-1}^T\right)^T \left(\sum_{t=2}^T \alpha_{it}\right)}{\delta^2}\right) - \left(\frac{\Xi(\eta)}{2\xi^2} + \frac{\Xi\left(\sum_{t=2}^T \alpha_{it}\right)}{2 \delta^2}\right)\right)\]
 
 \[\propto N(\mu_{\gamma i}, \Lambda_{\gamma i})\]
 
@@ -332,7 +332,7 @@ Since this doesn't have a standard form we use a slice sampler to sample from th
 
 \[p(\phi_t | \beta_t, z, w, b^2) \propto p(w | \phi_t, z) p(\phi_t | \beta_t)\]
 
-\[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(w_{jkt}; \pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, b^2)\]
+\[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(w_{jkt}; \pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, \sigma^2)\]
 
 Since this doesn't have a standard form we use a slice sampler to sample from the full conditional.
 

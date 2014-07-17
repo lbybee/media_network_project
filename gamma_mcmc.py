@@ -1,4 +1,5 @@
 from numpy import *
+from datetime import datetime
 
 def processWords(word):
     """returns vector of letters in vocab"""
@@ -23,7 +24,7 @@ def alphaPost(alpha_n1, gamma_i, delta2, a2 theta_it, I, d_it):
 
 
     lambda_ait = linalg.inv(1 / delta2 * I + d_it / a2 * I)
-    mu_ait = dot(lambda_ait, (1 / delta2 * I * dot(alpha_n1, gamma_i) + d_it / a2 * I *  sum(theta_dit)))
+    mu_ait = dot(lambda_ait, (1 / delta2 * I * dot(alpha_n1, gamma_i) + d_it / a2 * I *  sum(theta_it)))
     return random.multivariate_normal(mu_ait, lambda_ait)
 
 
@@ -67,7 +68,15 @@ def gammaPost(alpha_i, alpha_n, xi2, mu, delta2, I):
     return random.multivariate_normal(mu_gi, lambda_gi)
 
 
-def fullRun(N, K, T, V, iterations, graph, xi2, delta2): 
+def genPrevAlpha(alpha, T, N):
+    """gets the previous alpha values"""
+
+    # this essentially transposes the N and T values without changing the inner values
+    alpha_n = array([[alpha[i, t] for i in range(N)] for t in range(T-1)])
+    return alpha_n
+
+
+def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2): 
 
     # initalize values
     gamma = array([[1. / N for i in range(N)] for i in range(N)])
@@ -77,17 +86,60 @@ def fullRun(N, K, T, V, iterations, graph, xi2, delta2):
     theta = array([[[[1. for d in range(len(docs))] for docs in period] for period in node] for node in graph])
     
     # initalize storage
-    gamma_s = array([[[1. / N for i in range(N)] for i in range(N)] for s in range(S)])
-    alpha_s = array([[[[1. for k in range(K)] for t in range(T)] for i in range(N)] for s in range(S)])
-    beta_s = array([[[1. for v in range(V)] for t in range(T)] for s in range(S)])
-    phi_s = array([[[[1. for v in range(V)] for k in range(K)] for t in range(T)] for s in range(S)])
-    theta_s = array([[[[[1. for d in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
+    gamma_s = array([[[nan for i in range(N)] for i in range(N)] for s in range(S)])
+    alpha_s = array([[[[nan for k in range(K)] for t in range(T)] for i in range(N)] for s in range(S)])
+    beta_s = array([[[nan for v in range(V)] for t in range(T)] for s in range(S)])
+    phi_s = array([[[[nan for v in range(V)] for k in range(K)] for t in range(T)] for s in range(S)])
+    theta_s = array([[[[[nan for d in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
     
-    
+    # initialize start time
+    t_1 = datetime.now()
 
-    for j in iterations:
-        alpha_n = genPevAlpha(alpha)
-        for gamma_i, alpha_i, theta_i in zip(gamma, alpha, theta):
-            
-            
+    # Now do the sampling
+    for s range(S):
 
+        alpha_n = genPrevAlpha(alpha, T, N)
+        
+        for i in range(N):
+          
+            I = identity(K)
+
+            gamma_s[s, i] = gamma[i]
+            gamma[i] = gammaPost(alpha[i, 1:], alpha_n, xi2, mu, delta2, I)
+            
+            for t in range(1, T):
+
+                d_it = len(graph[i, t])
+
+                alpha_s[s, i, t] = alpha[i, t]
+                alpha[i, t] = alphaPost(alpha_n[t], gamma[i], delta2, a2, theta[i, t], I, d_it)
+
+                for d in range(d_it):
+
+                    w_it = len(graph[i, t, d])
+
+                    theta_s[s, i, t, d] = theta[i, t, d]
+                    theta[i, t, d] = thetaPost(z[i, t, d], alpha[i, t], delta2, I)
+
+                    for w in range(w_it):
+
+                        k = z[i, t, d, w]
+                        z_s[s, i, t, d, w] = z[i, t, d, w]
+                        z[i, t, d, w] = zPost(theta[i, t, d], graph[i, t, d, w], phi[t, k])
+
+
+        for t in range(1,T):
+
+            I = identity(V)
+
+            beta_s[s, t] = beta[t]
+            beta[t] = betaPost(beta[t-1], sigma2, b2, phi[t], I, k)
+
+            for k in range(K):
+
+                phi_s[s, t, k] = phi[t, k]
+                phi[t, k] = phiPost(vocab[t, k], beta[t], sigma2, I)
+
+        print datetime.now() - t_1, (s * 100.) / S
+
+    return gamma_s, alpha_s, beta_s, phi_s, theta_s
