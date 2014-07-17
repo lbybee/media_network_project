@@ -68,6 +68,24 @@ def gammaPost(alpha_i, alpha_n, xi2, mu, delta2, I):
     return random.multivariate_normal(mu_gi, lambda_gi)
 
 
+def logitNormalSampler(z, theta_dit, theta_it, alpha_it, a2, I):
+    """generates a augmented variable sample for theta
+
+    """
+
+    un_l = array([])
+    un_u = array([])
+    for z_w in z:
+        if z_w == theta_it:
+            un_l.append(random.uniform(0, exp(theta_dit) / exp(sum(theta_it))))
+        else:
+            un_u.append(random.uniform(exp(theta_dit) / exp(sum(theta_it)), 1))
+    mx_mn = max(un_l)
+    mn_mx = min(un_u)
+    return truncatedMVN(mx_mn, mn_mx, alpha_it, a2 * I)
+
+
+
 def genPrevAlpha(alpha, T, N):
     """gets the previous alpha values"""
 
@@ -119,7 +137,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
                     w_it = len(graph[i, t, d])
 
                     theta_s[s, i, t, d] = theta[i, t, d]
-                    theta[i, t, d] = thetaPost(z[i, t, d], alpha[i, t], delta2, I)
+                    theta[i, t, d] = logitNormalSamplert(z[i, t, d], theta[i, t, d], theta[i, t], alpha[i, t], a2, I)
 
                     for w in range(w_it):
 
@@ -138,7 +156,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
             for k in range(K):
 
                 phi_s[s, t, k] = phi[t, k]
-                phi[t, k] = phiPost(vocab[t, k], beta[t], sigma2, I)
+                phi[t, k] = logitNormalSampler(vocab[t, k], phi[t, k], phi[t], beta[t], b2, I)
 
         print datetime.now() - t_1, (s * 100.) / S
 
