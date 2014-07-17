@@ -45,6 +45,18 @@ def betaPost(beta_n1, sigma2, b2, phi_t, I, k):
     return random.multivariate_normal(mu_bit, lambda_bit)
 
 
+def gammaPost(alpha_i, alpha_n, xi2, mu, delta2, I):
+    """generates the full conditional for gamma_i
+
+    
+
+    """
+
+    lambda_gi = linalg.inv(1 / xi2 * I + dot(sum(alpha_n), sum(alpha_n) / delta2))
+    mu_gi = lambda_gi * (eta / xi2 + dot(sum(alpha_n), sum(alpha_i)) / delta2)
+    return random.multivariate_normal(mu_gi, lambda_gi)
+
+
 def fullRun(N, K, T, V, iterations, graph, xi2, delta2): 
 
     # initalize values
