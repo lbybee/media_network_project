@@ -188,7 +188,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
                     w_it = len(graph[i, t, d])
 
                     theta_s[s, i, t, d] = theta[i, t, d]
-                    theta[i, t, d] = logitNormalSamplert(z[i, t, d], theta[i, t, d], theta[i, t], alpha[i, t], a2, I)
+                    theta[i, t, d] = logitNormalSampler(z[i, t, d], theta[i, t, d], theta[i, t], alpha[i, t], a2, I)
 
                     for w in range(w_it):
 
