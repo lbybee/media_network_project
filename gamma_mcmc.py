@@ -40,10 +40,10 @@ def alphaPost(alpha_n1, gamma_i, delta2, a2, theta_it, I, d_it):
     """
 
     lambda_ait = linalg.inv(1 / delta2 * I + d_it / a2 * I)
-    mu_ait = dot(lambda_ait, (dot(transpose(1 / delta2 * I),
-                                  dot(transpose(alpha_n1), gamma_i))
-                              + dot(transpose(d_it / a2 * I),
-                                    theta_it.sum(axis=0))))
+    mu_ait = dot(transpose(lambda_ait), (dot(transpose(1 / delta2 * I),
+                                             dot(transpose(alpha_n1), gamma_i))
+                                         + dot(transpose(d_it / a2 * I),
+                                               theta_it.sum(axis=0))))
     return random.multivariate_normal(mu_ait, lambda_ait)
 
 
@@ -68,32 +68,44 @@ def betaPost(beta_n1, sigma2, b2, phi_t, I, k):
     """
 
     lambda_bit = linalg.inv(1 / sigma2 * I + k / b2 * I)
-    mu_bit = dot(lambda_bit, (dot(transpose(1 / sigma2 * I),
-                                  beta_n1)
-                              + dot(transpose(k / b2 * I),
-                                    phi_t.sum(axis=0))))
+    mu_bit = dot(transpose(lambda_bit), (dot(transpose(1 / sigma2 * I),
+                                             beta_n1)
+                                         + dot(transpose(k / b2 * I),
+                                               phi_t.sum(axis=0))))
     return random.multivariate_normal(mu_bit, lambda_bit)
 
 
-def gammaPost(alpha_i, alpha_n, xi2, mu, delta2, I):
+def gammaPost(alpha_i, alpha_n, xi2, eta, delta2, I):
     """generates the full conditional for gamma_i
 
-    xi2: scalar
-    delta2: scalar
-    I: KxK identity matrix
-    alpha_n: Tx(NXK) matrix of alpha_it-1 matricies.  alpha_it-1 is an NxK matrix of proportions for each node.
-    Each row is a node and each column is a proportion
-    alpha_i: Tx(Kx1) matrix of alpha_it values.  alpha_it is a vector of the topic proportions for the ith node.
-    gamma_i: Nx1 vector, each element is a weight for that node
-    dot(sum(alpha_n), sum(alpha_n)): KxK matrix
-    dot(sum(alpha_n), sum(alpha_i)): Nx1 vector
-    eta: Nx1 vector, the prior for gamma_i
-    mu_gi: Nx1 vector
+    * xi2: scalar
+    * delta2: scalar
+    * I: NxN identity matrix
+    * alpha_n: Tx(NXK) matrix of alpha_it-1 matricies.  alpha_it-1 is an
+    NxK matrix of proportions for each node. Each row is a node and each
+    column is a proportion
+    * alpha_i: Tx(Kx1) matrix of alpha_it values.  alpha_it is a vector
+    of the topic proportions for the ith node.
+    * gamma_i: Nx1 vector, each element is a weight for that node
+    * dot(alpha_n.sum(axis=0), transpose(alpha_n.sum(axis=0))): NxN matrix
+    The transposes are different here from above because in order to get
+    gamma we have to treat the rows as columns and columns as rows
+    * dot(alpha_n.sum(axis=0), alpha_i.sum(axis=0)): Nx1 vector
+    * eta: Nx1 vector, the prior for gamma_i
+    * mu_gi: Nx1 vector
+
+    Notes:
+
+    * The only thing wierd here is the transposes.  Just think that alpha_n
+    and alpha_i were already transposed before being fed in.
 
     """
 
-    lambda_gi = linalg.inv(1 / xi2 * I + dot(sum(alpha_n), sum(alpha_n)) / delta2)
-    mu_gi = dot(lambda_gi, (eta / xi2 + dot(sum(alpha_n), sum(alpha_i)) / delta2))
+    lambda_gi = linalg.inv(1 / xi2 * I + dot(alpha_n.sum(axis=0),
+                                             transpose(alpha_n.sum(axis=0)))
+                           / delta2)
+    mu_gi = dot(transpose(lambda_gi), (eta / xi2 + dot(alpha_n.sum(axis=0),
+                                            alpha_i.sum(axis=0)) / delta2))
     return random.multivariate_normal(mu_gi, lambda_gi)
 
 
@@ -157,12 +169,14 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
         
         for i in range(N):
           
-            I = identity(K)
+            I = identity(N)
 
             gamma_s[s, i] = gamma[i]
             gamma[i] = gammaPost(alpha[i, 1:], alpha_n, xi2, mu, delta2, I)
             
             for t in range(1, T):
+
+                I = identity(K)
 
                 d_it = len(graph[i, t])
 

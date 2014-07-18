@@ -23,3 +23,15 @@ I = identity(200)
 k = 10
 
 beta_r = gamma_mcmc.betaPost(beta_n1, sigma2, b2, phi_t, I, k)
+
+# gammaPost test
+
+alpha_i = random.randint(1, 20, size=(15, 10))
+alpha_n = random.randint(1, 20, size=(15, 20, 10))
+xi2 = 10.
+eta = random.rand(20)
+delta2 = 10.
+I = identity(20)
+
+gamma_r = gamma_mcmc.gammaPost(alpha_i, alpha_n, xi2, eta, delta2, I)
+
