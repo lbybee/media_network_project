@@ -7,24 +7,43 @@ def processWords(word):
     return
 
 
-def alphaPost(alpha_n1, gamma_i, delta2, a2 theta_it, I, d_it):
+def alphaPost(alpha_n1, gamma_i, delta2, a2, theta_it, I, d_it):
     """generates the full conditional for alpha_it
     
-    delta2: scalar
-    a2: scalar
-    I: KxK identity matrix
-    d_it: scalar, the number of documents for a given node in a given period
-    alpha_n1: NxK matrix of proportions for each node.  Each row is a node and each column is a proportion
-    gamma_i: Nx1 vector, each element is a weight for that node
-    dot(alpha_n1, gamma_i): Kx1 vector
-    theta_it: DxK matrix of draws for each document.  Each row is the document and each column is the topic
-    mu_ait: Kx1 vector
+    * delta2: scalar
+    * a2: scalar
+    * I: KxK identity matrix
+    * d_it: scalar, the number of documents for a given node in a given
+    period
+    * alpha_n1: NxK matrix of proportions for each node.  Each row is a
+    node and each column is a proportion
+    * gamma_i: Nx1 vector, each element is a weight for that node
+    * theta_it: DxK matrix of draws for each document.  Each row is the
+    document and each column is the topic
+    * mu_ait: Kx1 vector
+
+    NOTES:
+
+    * theta_it.sum(axis=0) sums all the columns so you get a Kx1 vector
+    that is the sum of thetas over the documents
+    * dot(alpha_n1, gamma_i) is a Kx1 vector for the "mean".
+    * 1 / delta2 * I is a KxK diagonal matrix with 1 / delta2 in the diagonal
+    * d_it / a2 * I is a KxK diagonal matrix with d_it / a2 in the diagonal
+    * dot(transpose(1 / delta2 * I), dot(transpose(alpha_n1), gamma_i)) is
+    a Kx1 vector for the prior
+    * dot(transpose(d_it / a2 * I), theta_it.sum(axis=0)) is a Kx1 vector
+    for the data
+
+    * lambda_ait is a KxK matrix of the covariance
+    * mu_ait is a Kx1 vector for the mean
 
     """
 
-
     lambda_ait = linalg.inv(1 / delta2 * I + d_it / a2 * I)
-    mu_ait = dot(lambda_ait, (1 / delta2 * I * dot(alpha_n1, gamma_i) + d_it / a2 * I *  sum(theta_it)))
+    mu_ait = dot(lambda_ait, (dot(transpose(1 / delta2 * I),
+                                  dot(transpose(alpha_n1), gamma_i))
+                              + dot(transpose(d_it / a2 * I),
+                                    theta_it.sum(axis=0))))
     return random.multivariate_normal(mu_ait, lambda_ait)
 
 
@@ -66,6 +85,14 @@ def gammaPost(alpha_i, alpha_n, xi2, mu, delta2, I):
     lambda_gi = linalg.inv(1 / xi2 * I + dot(sum(alpha_n), sum(alpha_n)) / delta2)
     mu_gi = dot(lambda_gi, (eta / xi2 + dot(sum(alpha_n), sum(alpha_i)) / delta2))
     return random.multivariate_normal(mu_gi, lambda_gi)
+
+
+def zPost(theta_itd, w, phi_tk):
+    """
+    
+    """
+
+    return
 
 
 def logitNormalSampler(z, theta_dit, theta_it, alpha_it, a2, I):
@@ -114,7 +141,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
     t_1 = datetime.now()
 
     # Now do the sampling
-    for s range(S):
+    for s in range(S):
 
         alpha_n = genPrevAlpha(alpha, T, N)
         
