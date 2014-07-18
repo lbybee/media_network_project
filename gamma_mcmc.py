@@ -50,18 +50,28 @@ def alphaPost(alpha_n1, gamma_i, delta2, a2, theta_it, I, d_it):
 def betaPost(beta_n1, sigma2, b2, phi_t, I, k):
     """generates the full conditional for beta_t
 
-    sigma2: scalar
-    b2: scalar
-    I: VxV identity matrix
-    k: scalar, the number of topics
-    beta_n1: Vx1 vector
-    phi_t: KxV matrix of proportions for each topic for each word.
-    mu_bit: Vx1 vector
+    * sigma2: scalar
+    * b2: scalar
+    * I: VxV identity matrix
+    * k: scalar, the number of topics
+    * beta_n1: Vx1 vector
+    * phi_t: KxV matrix of proportions for each topic for each word.
+    * mu_bit: Vx1 vector
     
+    NOTES:
+
+    * phi_t.sum(axis=0) sums all the columns so you get a Vx1 vector.
+    The columns in this case are the topics.  There is a phi_tk for
+    each topic.
+    * See alphaPost notes.  It is basically the same.
+
     """
 
     lambda_bit = linalg.inv(1 / sigma2 * I + k / b2 * I)
-    mu_bit = dot(lambda_bit, (1 / sigma2 * I * beta_n1 + k / b2 * I * sum(phi_t)))
+    mu_bit = dot(lambda_bit, (dot(transpose(1 / sigma2 * I),
+                                  beta_n1)
+                              + dot(transpose(k / b2 * I),
+                                    phi_t.sum(axis=0))))
     return random.multivariate_normal(mu_bit, lambda_bit)
 
 
