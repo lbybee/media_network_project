@@ -192,6 +192,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
     beta_s = array([[[nan for v in range(V)] for t in range(T)] for s in range(S)])
     phi_s = array([[[[nan for v in range(V)] for k in range(K)] for t in range(T)] for s in range(S)])
     theta_s = array([[[[[nan for d in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
+    z_s = array([[[[[[nan for w in range(len(wrds))] for d in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
     
     # initialize start time
     t_1 = datetime.now()
@@ -228,7 +229,7 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
 
                         k = z[i, t, d, w]
                         z_s[s, i, t, d, w] = z[i, t, d, w]
-                        z[i, t, d, w] = zPost(theta[i, t, d], graph[i, t, d, w], phi[t, k])
+                        z[i, t, d, w] = zPost(theta[i, t, d], graph[i, t, d, w], phi[t])
 
 
         for t in range(1,T):
@@ -245,4 +246,4 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2):
 
         print datetime.now() - t_1, (s * 100.) / S
 
-    return gamma_s, alpha_s, beta_s, phi_s, theta_s
+    return gamma_s, alpha_s, beta_s, phi_s, theta_s, z_s
