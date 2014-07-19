@@ -177,7 +177,7 @@ def genPrevAlpha(alpha, T, N):
     return alpha_n
 
 
-def fullRun(N, K, T, V, iterations, graph, vocab, xi2, delta2): 
+def fullRun(N, K, T, V, iterations, graph, vocab, xi2, sigma2, delta2, b2, a2): 
 
     # initalize values
     gamma = array([[1. / N for i in range(N)] for i in range(N)])
