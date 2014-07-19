@@ -61,3 +61,36 @@ a2 = 10.
 I = identity(10)
 
 theta_dit = gamma_mcmc.logitNormalSampler(z, theta_dit, theta_it, alpha_it, a2, I)
+
+# z post test
+
+theta_dit = 4 * random.rand(10) + 25
+phi_t = 4 * random.rand(10, 200) + 25
+w = zeros(200)
+w[random.randint(200)] = 1
+
+z_r = gamma_mcmc.zPost(theta_dit, w, phi_t)
+
+# full run test
+
+N = 20
+T = 15
+K = 10
+V = 200
+
+graph = array([])
+for i in range(N):
+    node = array([])
+    for t in range(T):
+        period = array([])
+        for d in range(random.randint(1, 10)):
+            doc = array([])
+            for w in range(random.randint(10, 300)):
+                wrd = zeros(200)
+                wrd[random.randint(200)] = 1
+                doc.append(wrd)
+            period.append(doc)
+        node.append(period)
+    graph.append(node)
+    
+res = gamma_mcmc.fullRun(N, T, K, V, graph, xi2, sigma2, delta2, b2, a2)
