@@ -94,7 +94,7 @@ def gammaPost(alpha_i, alpha_n, xi2, eta, delta2, I):
     * eta: Nx1 vector, the prior for gamma_i
     * mu_gi: Nx1 vector
 
-    Notes:
+    NOTES:
 
     * The only thing wierd here is the transposes.  Just think that alpha_n
     and alpha_i were already transposed before being fed in.
@@ -117,22 +117,24 @@ def zPost(theta_itd, w, phi_tk):
     return
 
 
-def logitNormalSampler(z, theta_dit, theta_it, alpha_it, a2, I):
+def logitNormalSampler(z, theta_dit, alpha_it, a2, I):
     """generates a augmented variable sample for theta
 
     """
 
-    un_l = array([])
-    un_u = array([])
-    for z_w in z:
-        if z_w == theta_it:
-            un_l.append(random.uniform(0, exp(theta_dit) / exp(sum(theta_it))))
-        else:
-            un_u.append(random.uniform(exp(theta_dit) / exp(sum(theta_it)), 1))
-    mx_mn = max(un_l)
-    mn_mx = min(un_u)
-    return truncatedMVN(mx_mn, mn_mx, alpha_it, a2 * I)
-
+    theta_ditp = array([])
+    for i, theta_kdit in enumerate(theta_dit):
+        un_l = array([])
+        un_u = array([])
+        for z_w in z:
+            if z_w[i] == 1:
+                un_l.append(random.uniform(0, exp(theta_kdit) / exp(sum(theta_dit))))
+            else:
+                un_u.append(random.uniform(exp(theta_kdit) / exp(sum(theta_dit)), 1))
+        mx_mn = max(un_l)
+        mn_mx = min(un_u)
+        theta_ditp.append(stats.truncnorm.ppf())
+    return theta_ditp
 
 
 def genPrevAlpha(alpha, T, N):
