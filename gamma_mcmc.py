@@ -117,8 +117,31 @@ def zPost(theta_itd, w, phi_tk):
     return
 
 
-def logitNormalSampler(z, theta_dit, alpha_it, a2, I):
-    """generates a augmented variable sample for theta
+def logitNormalSampler(z, theta_dit, alpha_it, a2):
+    """generates a augmented variable sample for theta/phi, this is a general
+    function since they both have the same form.
+    
+    * z: WxK matrix.  This is a vector of the topics chosen for each of the W
+    words.
+    * theta_dit: Kx1 vector.  This is an array of each of the proportions
+    for the given document.  The result of this function is just an updated
+    version of this.
+    * alpha_it: Kx1 vector.  This is the underlying proportions.
+    * a2: scalar.
+    
+    NOTES:
+    
+    * This all works the same for the phis.  Where the thetas use documents,
+    phis use topics, where thetas use topics phis use vocabulary.
+    
+    In the phi case:
+    
+    * w: WxV matrix.  This is just a matrix of the words, each word is a location
+    in a vocab vector.
+    * phi_kt.  Vx1 vector.  This is a vector of the proportion for each word
+    for the kth topic.
+    * beta_t: Vx1 vector.  This is the underlying proportions.
+    * b2 scalar.
 
     """
 
@@ -133,7 +156,7 @@ def logitNormalSampler(z, theta_dit, alpha_it, a2, I):
                 un_u.append(random.uniform(exp(theta_kdit) / exp(sum(theta_dit)), 1))
         mx_mn = max(un_l)
         mn_mx = min(un_u)
-        theta_ditp.append(stats.truncnorm.ppf())
+        theta_ditp.append(stats.truncnorm.rvs(mx_mn, mn_mx, alpha_it[i], a2))
     return theta_ditp
 
 
