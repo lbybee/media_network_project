@@ -109,12 +109,21 @@ def gammaPost(alpha_i, alpha_n, xi2, eta, delta2, I):
     return random.multivariate_normal(mu_gi, lambda_gi)
 
 
-def zPost(theta_itd, w, phi_tk):
+def zPost(theta_itd, w, phi_t):
     """
     
+    * theta_itd: Kx1 vector of proportions for topics
+    * w: Vx1 vector where the 1 value corresponds to the word
+    * phi_t: KxV matrix.  We iterate through the topics here and then take the correct
+    vocab for w.
+    
     """
-
-    return
+    
+    theta_phi = array([])
+    w_ind = where(w==1)[0][0]
+    for theta_itdk, phi_tk in zip(theta_itd, phi_t):
+        theta_phi.append((theta_itdk / sum(theta_itd)) * (phi_tk[w_ind] / sum(phi_tk)))
+    return random.multinomial(1, theta_phi)
 
 
 def logitNormalSampler(z, theta_dit, alpha_it, a2):
