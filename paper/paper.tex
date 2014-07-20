@@ -254,7 +254,7 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[p(z_{jit} | w_{jit}, \theta_{it}, \phi_t) \propto p(z_{jit} = k | \theta_{it}) p(w_{jit} | z_{jit} = k, \phi_t)\]
 
-\[= \frac{\theta_{it}^{I_{z_{jit}}=k}}{\sum_k \theta_{it}} \frac{\phi_{t}^{I_{w_{jit}}=v}}{\sum_v \phi_{kt}}\]
+\[= Mult\left(\left\{\frac{\theta_{kdit}}{\sum_{k'} \theta_{k'dit}}\frac{\phi_{kt}^{I_{w_{jit}}=v}}{\sum_v \phi_{kt}} \forall k \in K \right\}\right)\]
 
 \subsection{Posterior Specification for $\beta_t$}
 
@@ -326,7 +326,7 @@ Let $\Xi(x) = x^Tx$
 
 \[= \prod_{d=1}^{D_i} \prod_{j=1}^{J_d} Mult(z_{jdit}; \pi(\theta_{dit}))\prod_{d=1}^{D_i} N(\alpha_{it}, \delta^2I)\]
 
-Since this doesn't have a standard form we use a slice sampler to sample from the full conditional.
+Since this doesn't have a standard form I use the method suggested by Minmo et. al\footnote{Mimno, Wallach and McCallum. Gibbs Sampling for Logistic Normal Topic Models with Graph-Based Priors. 2008.}.
 
 \subsection{Posterior Specification for $\phi_t$}
 
@@ -334,6 +334,6 @@ Since this doesn't have a standard form we use a slice sampler to sample from th
 
 \[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(w_{jkt}; \pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, \sigma^2)\]
 
-Since this doesn't have a standard form we use a slice sampler to sample from the full conditional.
+Since this doesn't have a standard form I use the method suggested by Minmo et. al.
 
 \end{document}
