@@ -1,5 +1,6 @@
 from numpy import *
 from datetime import datetime
+from scipy import stats
 
 def processWords(word):
     """returns vector of letters in vocab"""
@@ -119,10 +120,13 @@ def zPost(theta_itd, w, phi_t):
     
     """
     
-    theta_phi = array([])
+    l_theta_itd = len(theta_itd)
+    theta_phi = zeros(l_theta_itd)
     w_ind = where(w==1)[0][0]
+    i = 0
     for theta_itdk, phi_tk in zip(theta_itd, phi_t):
-        theta_phi.append((theta_itdk / sum(theta_itd)) * (phi_tk[w_ind] / sum(phi_tk)))
+        theta_phi[0] = (theta_itdk / sum(theta_itd)) * (phi_tk[w_ind] / sum(phi_tk))
+        i += 1
     return random.multinomial(1, theta_phi)
 
 
@@ -154,18 +158,21 @@ def logitNormalSampler(z, theta_dit, alpha_it, a2):
 
     """
 
-    theta_ditp = array([])
+    l_z = len(z)
+    l_theta_dit = len(theta_dit)
+    theta_ditp = zeros(l_theta_dit)
     for i, theta_kdit in enumerate(theta_dit):
-        un_l = array([])
-        un_u = array([])
-        for z_w in z:
+        un_l = array([nan for u in range(l_z)]) 
+        un_u = array([nan for u in range(l_z)])
+        for j, z_w in enumerate(z):
             if z_w[i] == 1:
-                un_l.append(random.uniform(0, exp(theta_kdit) / exp(sum(theta_dit))))
+                un_l[j] = random.uniform(0, exp(theta_kdit) / exp(sum(theta_dit)))
             else:
-                un_u.append(random.uniform(exp(theta_kdit) / exp(sum(theta_dit)), 1))
+                un_u[j] = random.uniform(exp(theta_kdit) / exp(sum(theta_dit)), 1)
         mx_mn = max(un_l)
         mn_mx = min(un_u)
-        theta_ditp.append(stats.truncnorm.rvs(mx_mn, mn_mx, alpha_it[i], a2))
+        theta_ditp[i] = stats.truncnorm.rvs(mx_mn, mn_mx, alpha_it[i], a2)
+    print theta_ditp
     return theta_ditp
 
 
@@ -177,7 +184,24 @@ def genPrevAlpha(alpha, T, N):
     return alpha_n
 
 
-def fullRun(N, K, T, V, iterations, graph, vocab, xi2, sigma2, delta2, b2, a2): 
+def genPeriodVocab(graph, T):
+    """generates the a a colapsed graph for all the periods"""
+    
+    vocab = []
+    for t in range(T):
+        period_list = []
+        for node in graph:
+            t_node = node[t]
+            for doc in t_node:
+                period_list.extend(list(doc))
+        vocab.append(period_list)
+    return array(vocab)
+
+
+def fullRun(N, K, T, V, S, graph, xi2, sigma2, delta2, b2, a2): 
+
+    # gen vocab
+    vocab = genPeriodVocab(graph, T)
 
     # initalize values
     gamma = array([[1. / N for i in range(N)] for i in range(N)])
@@ -185,15 +209,17 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, sigma2, delta2, b2, a2):
     beta = array([[1. for v in range(V)] for t in range(T)])
     phi = array([[[1. for v in range(V)] for k in range(K)] for t in range(T)])
     theta = array([[[[1. for d in range(len(docs))] for docs in period] for period in node] for node in graph])
-    
+    print "values initalized"
+
     # initalize storage
     gamma_s = array([[[nan for i in range(N)] for i in range(N)] for s in range(S)])
     alpha_s = array([[[[nan for k in range(K)] for t in range(T)] for i in range(N)] for s in range(S)])
     beta_s = array([[[nan for v in range(V)] for t in range(T)] for s in range(S)])
     phi_s = array([[[[nan for v in range(V)] for k in range(K)] for t in range(T)] for s in range(S)])
     theta_s = array([[[[[nan for d in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
-    z_s = array([[[[[[nan for w in range(len(wrds))] for wrds in range(len(docs))] for docs in period] for period in node] for node in graph] for s in range(S)])
-    
+    z_s = array([[[[[[nan for w in range(len(wrds))] for wrds in docs] for docs in period] for period in node] for node in graph] for s in range(S)])
+    print "storage initalized"
+
     # initialize start time
     t_1 = datetime.now()
 
@@ -206,42 +232,48 @@ def fullRun(N, K, T, V, iterations, graph, vocab, xi2, sigma2, delta2, b2, a2):
           
             I = identity(N)
 
-            gamma_s[s, i] = gamma[i]
-            gamma[i] = gammaPost(alpha[i, 1:], alpha_n, xi2, mu, delta2, I)
-            
+            gamma_s[s][i] = gamma[i]
+            gamma[i] = gammaPost(alpha[i][1:], alpha_n, xi2, mu, delta2, I)
+            print "gamma"
+
             for t in range(1, T):
 
                 I = identity(K)
 
-                d_it = len(graph[i, t])
+                d_it = len(graph[i][t])
 
-                alpha_s[s, i, t] = alpha[i, t]
-                alpha[i, t] = alphaPost(alpha_n[t], gamma[i], delta2, a2, theta[i, t], I, d_it)
+                alpha_s[s][i][t] = alpha[i][t]
+                alpha[i][t] = alphaPost(alpha_n[t], gamma[i], delta2, a2, theta[i][t], I, d_it)
+                print "alpha"
 
                 for d in range(d_it):
 
-                    w_it = len(graph[i, t, d])
+                    w_it = len(graph[i][t][d])
 
-                    theta_s[s, i, t, d] = theta[i, t, d]
-                    theta[i, t, d] = logitNormalSampler(z[i, t, d], theta[i, t, d], theta[i, t], alpha[i, t], a2, I)
+                    theta_s[s][i][t][d] = theta[i][t][d]
+                    theta[i][t][d] = logitNormalSampler(z[i][t][d], theta[i][t][d], theta[i][t], alpha[i][t], a2, I)
+                    print "theta"
 
                     for w in range(w_it):
 
-                        z_s[s, i, t, d, w] = z[i, t, d, w]
-                        z[i, t, d, w] = zPost(theta[i, t, d], graph[i, t, d, w], phi[t])
+                        z_s[s][i][t][d][w] = z[i][t][d][w]
+                        z[i][t][d][w] = zPost(theta[i][t][d], graph[i][t][d][w], phi[t])
+                        print "z"
 
 
         for t in range(1,T):
 
             I = identity(V)
 
-            beta_s[s, t] = beta[t]
+            beta_s[s][t] = beta[t]
             beta[t] = betaPost(beta[t-1], sigma2, b2, phi[t], I, k)
+            print "beta"
 
             for k in range(K):
 
-                phi_s[s, t, k] = phi[t, k]
-                phi[t, k] = logitNormalSampler(vocab[t, k], phi[t, k], phi[t], beta[t], b2, I)
+                phi_s[s][t][k] = phi[t][k]
+                phi[t][k] = logitNormalSampler(vocab[t], phi[t][k], phi[t], beta[t], b2, I)
+                print "phi"
 
         print datetime.now() - t_1, (s * 100.) / S
 
