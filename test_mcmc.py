@@ -41,13 +41,12 @@ gamma_r = gamma_mcmc.gammaPost(alpha_i, alpha_n, xi2, eta, delta2, I)
 vocab = zeros((30, 200))
 for i, j in enumerate(random.randint(0, 200, size=(30))):
     vocab[i, j] = 1
-phi_kt = 4 * random.randn(200) + 25
 phi_t = 4 * random.randn(10, 200) + 25
 beta_t = random.randint(1, 20, size=(200))
 b2 = 10.
 I = identity(200)
 
-phi_kt = gamma_mcmc.logitNormalSampler(vocab, phi_kt, phi_t, beta_t, b2, I)
+phi_kt = gamma_mcmc.logitNormalSampler(vocab, phi_t, beta_t, b2)
 
 # theta post test
 
@@ -55,12 +54,11 @@ z = zeros((30, 10))
 for i, j in enumerate(random.randint(0, 10, size=(30))):
     z[i, j] = 1
 theta_dit = 4 * random.randn(10) + 25
-theta_it = 4 * random.randn(5, 10) + 25
 alpha_it = random.randint(1, 20, size=(10))
 a2 = 10.
 I = identity(10)
 
-theta_dit = gamma_mcmc.logitNormalSampler(z, theta_dit, theta_it, alpha_it, a2, I)
+theta_dit = gamma_mcmc.logitNormalSampler(z, theta_dit, alpha_it, a2)
 
 # z post test
 
