@@ -11,7 +11,7 @@ def buildVocab(csv_f):
     t_1 = datetime.now()
 
     vocab = []
-    reader = csv.reader(open(csv_f), "rb"))
+    reader = csv.reader(open(csv_f, "rb"))
     reader_l = list(reader)
     ln = len(reader_l)
     for i, row in enumerate(reader_l):
@@ -30,7 +30,7 @@ def buildData(csv_f, vocab):
     t_1 = datetime.now()
 
     data = {}
-    reader = csv.reader(open(csv_f), "rb"))
+    reader = csv.reader(open(csv_f, "rb"))
     reader_l = list(reader)
     ln = len(reader_l)
     for i, row in enumerate(reader_l):
