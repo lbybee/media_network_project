@@ -318,7 +318,7 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[p(\gamma_i | \eta, \xi^2) = N(\eta, \xi^2)\]
 
-\[p(\alpha_i|\chi,\pi^2) = N(\chi, \pi^2)\]
+\[p(\alpha_i|\chi,\sigma^2) = N(\chi, \sigma^2)\]
 
 \[\text{\boldmath$\alpha$} = \{\alpha_1, \alpha_2, ...,\alpha_N\}\]
 
@@ -326,8 +326,10 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[p(\phi_k | \beta) = Dir(\beta)\]
 
-\[p(z_{itj}| \theta) = Mult(\pi(\theta_{it}))\]
+\[p(z_{itj}| \theta_{it}) = Mult(\pi(\theta_{it}))\]
 
 \[p(w_{itj} | \phi, z_{itj}) = Mult(\phi_{z_{itj}})\]
+
+\[p(\theta, \phi, \gamma, \alpha, \beta, z | w) \propto \prod_{i=1}^N \prod_{t=1}^T \prod_{j=1}^{J_{ti}} \prod_{k=1}^K p(w_{itj} | \phi, z_{itj}) p(z_{itj} | \theta_{it}) p(\phi_k | \beta) p(\theta_{it} | \alpha_i, \gamma_i, \delta^2) p(\alpha_i | \chi, \sigma^2) p(\gamma_i | \eta, xi^2)\]
 
 \end{document}
