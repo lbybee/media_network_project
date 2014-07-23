@@ -240,10 +240,6 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[p(\phi | \beta_t, b^2) = N(\beta_t, b^2)\]
 
-\[p(a^2 | \nu_0, \tau_0) = IW(\nu_0, \tau_0)\]
-
-\[p(b^2 | \nu_1, \tau_1) = IW(\nu_1, \tau_1)\]
-
 \[p(z| \theta) = Mult(\pi(\theta))\]
 
 \[p(w | \phi, z) = Mult(\pi(\phi_z))\]
@@ -268,14 +264,6 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 
 \[\mu_{\beta t} = \Lambda_{\beta t} \left((\sigma^2)^{-1}\beta_{t-1} + k (b^2)^{-1} \sum_{k=1}^K \phi_{kt}\right) \]
 
-\subsection{Posterior Specification for $b^2$}
-
-\[p(b^2|\beta,\phi) \propto \prod_{t=1}^T \prod_{k=1}^K p(\phi_{kt} | \beta_t, b^2)p(b^2 | \nu_0, \tau_0) \]
-
-\[= \prod_{t=1}^T \prod_{k=1}^K N(\phi_{kt};\beta_t, b^2)IW(\nu_0, \tau_0)\]
-
-\[\propto IW\left(\nu_0 + TK, \left(\tau_0 + \sum_{t=1}^T \sum_{k=1}^K (\phi_{kt} - \beta_t)(\phi_{kt} - \beta_t)^T\right)^{-1}\right)\]
-
 \subsection{Posterior Specification for $\alpha_{it}$}
 
 \[p(\alpha_{it} | \theta_{it}, \text{\boldmath$\alpha$}_{t-1}, \gamma_i, a^2, \delta^2) \propto \prod_{k=1}^K p(\phi_{kt} | \beta_t) p(\beta_t | \beta_{t-1})\]
@@ -287,16 +275,6 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 \[\Lambda_{\alpha i t} = ((\delta^2)^{-1} + d_i (a^2)^{-1})^{-1}\]
 
 \[\mu_{\alpha i t} = \Lambda_{\alpha i t} \left((\delta^2)^{-1}\text{\boldmath$\alpha$}_{t-1} \gamma_i + d_i (a^2)^{-1} \sum_{d=1}^{D_i} \theta_{dit}\right) \]
-
-\subsection{Posterior Specification for $a^2$}
-
-\[p(a^2|\alpha,\theta) \propto \prod_{t=1}^T \prod_{i=1}^N \prod_{d=1}^{D_i} p(\theta_{dit} | \alpha_{it}, a^2)p(a^2 | \nu_1, \tau_1) \]
-
-\[= \prod_{t=1}^T \prod_{i=1}^N \prod_{k=1}^K N(\theta_{dit};\alpha_{it}, a^2)IW(\nu_1, \tau_1)\]
-
-This needs to be fixed
-
-\[\propto IW\left(\nu_1 + TND, \left(\tau_0 + \sum_{t=1}^T \sum_{i=1}^N \sum_{d=1}^{D_i} (\theta_{dit} - \alpha_{it})(\theta_{dit} - \alpha_{dit})^T\right)^{-1}\right)\]
 
 \subsection{Posterior Specification for $\gamma_i$}
 
@@ -335,5 +313,21 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 \[= \prod_{k=1}^K \prod_{j=1}^{J_k} Mult(w_{jkt}; \pi(\phi_{kt}))\prod_{k=1}^K N(\beta_t, \sigma^2)\]
 
 Since this doesn't have a standard form I use the method suggested by Minmo et. al.
+
+\section{Full Conditionals for the Alternative Model}
+
+\[p(\gamma_i | \eta, \xi^2) = N(\eta, \xi^2)\]
+
+\[p(\alpha_i|\chi,\pi^2) = N(\chi, \pi^2)\]
+
+\[\text{\boldmath$\alpha$} = \{\alpha_1, \alpha_2, ...,\alpha_N\}\]
+
+\[p(\theta_{it}| \alpha_i, \gamma_i,\delta^2) = N(\text{\boldmath$\alpha$}^T \gamma_i, \delta^2)\]
+
+\[p(\phi_k | \beta) = Dir(\beta)\]
+
+\[p(z_{itj}| \theta) = Mult(\pi(\theta_{it}))\]
+
+\[p(w_{itj} | \phi, z_{itj}) = Mult(\phi_{z_{itj}})\]
 
 \end{document}
