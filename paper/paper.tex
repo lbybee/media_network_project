@@ -336,9 +336,13 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[p(\gamma_i | \text{\boldmath$\alpha$}, \delta^2, \theta_i, \eta, \xi^2) \propto p(\theta_i | \text{\boldmath$\alpha$}, \gamma_i, \delta^2)p(\eta, \xi^2)\]
 
-\[\prod_{t=1}^T N(\text{\boldmath$\alpha$}^T \gamma_i, \delta^2) N(\eta, \xi^2)\]
+\[= \prod_{t=1}^T N(\text{\boldmath$\alpha$}^T \gamma_i, \delta^2) N(\eta, \xi^2)\]
 
-\[\]
+\[\propto N(\mu_{\gamma i}, \Lambda_{\gamma i})\]
+
+\[\Lambda_{\gamma i} = \left(\frac{I}{\xi^2} + \frac{\text{\boldmath$\alpha$}\text{\boldmath$\alpha$}^T}{\delta^2}\right)^{-1}\]
+
+\[\mu_{\gamma i} = \Lambda_{\gamma i} \left(\frac{\eta}{\xi^2} + \frac{T\text{\boldmath$\alpha$} \sum_{t=1}^T \theta_{it}}{\sigma^2}\right)\]
 
 \subsection{Posterior Specification for $\theta_{it}$}
 
