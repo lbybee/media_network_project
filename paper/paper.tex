@@ -228,7 +228,7 @@ $\gamma_i$ is an $N$ dimensional vector of weights for the $N$ agents for the $i
 \newpage
 \appendix
 
-\section{Full Conditionals}
+\section{Full Conditionals\\ NOTE: This section is now out of date, see Appendix B}
 
 \[p(\gamma_i | \mu, \xi^2) = N(\eta, \xi^2)\]
 
@@ -330,6 +330,40 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[p(w_{itj} | \phi, z_{itj}) = Mult(\phi_{z_{itj}})\]
 
-\[p(\theta, \phi, \gamma, \alpha, \beta, z | w) \propto \prod_{i=1}^N \prod_{t=1}^T \prod_{j=1}^{J_{ti}} \prod_{k=1}^K p(w_{itj} | \phi, z_{itj}) p(z_{itj} | \theta_{it}) p(\phi_k | \beta) p(\theta_{it} | \alpha_i, \gamma_i, \delta^2) p(\alpha_i | \chi, \sigma^2) p(\gamma_i | \eta, xi^2)\]
+\[p(\theta, \phi, \gamma, \alpha, \beta, z | w) \propto \prod_{i=1}^N \prod_{t=1}^T \prod_{j=1}^{J_{it}} p(w_{itj} | \phi, z_{itj}) p(z_{itj} | \theta_{it}) p(\phi_k | \beta) p(\theta_{it} | \alpha_i, \gamma_i, \delta^2) p(\alpha_i | \chi, \sigma^2) p(\gamma_i | \eta, xi^2)\]
+
+\subsection{Posterior Specification for $\gamma_i$}
+
+\[p(\gamma_i | \text{\boldmath$\alpha$}, \delta^2, \theta_i, \eta, \xi^2) \propto p(\theta_i | \text{\boldmath$\alpha$}, \gamma_i, \delta^2)p(\eta, \xi^2)\]
+
+\[\prod_{t=1}^T N(\text{\boldmath$\alpha$}^T \gamma_i, \delta^2) N(\eta, \xi^2)\]
+
+\[\]
+
+\subsection{Posterior Specification for $\theta_{it}$}
+
+\[p(\theta_{it} | z, \text{\boldmath$\alpha$}, \gamma_i, \delta^2) \propto p(z_{it}| \theta_{it}) p(\theta_{it} | \text{\boldmath$\alpha$}, \gamma_i, \delta^2)\]
+
+\[= \prod_{j=1}^{J_{it}} Mult(\pi(\theta_{it})) N(\text{\boldmath$\alpha$}^T\gamma_i, \delta^2)\]
+
+Since this doesn't have a standard form I use the method suggested by Minmo et. al\footnote{Mimno, Wallach and McCallum. Gibbs Sampling for Logistic Normal Topic Models with Graph-Based Priors. 2008.}.
+
+\subsection{Posterior Specification for $\phi_k$}
+
+\[p(\phi_k | \beta, z, w) \propto p(w | \phi_k, z) p(\phi_k | \beta)\]
+
+\[= \prod_{j=1}^{J_{z=k}} Mult(\phi_k) Dir(\beta)\]
+
+\[\propto Dir\left(\beta + \sum_{j=1}^{J_{z=k}}w_j \right)\]
+
+$w_j$ is this case is a $v$ vector with a one for the $w$th element and 0 everywhere else.
+
+
+
+\subsection{Posterior Specification for $z_{itj}$}
+
+\[p(z_{itj} | w_{itj}, \theta_{it}, \phi) \propto p(w_{itj} | \phi, z_{itj}) p(z_{itj} | \theta_{it})\]
+
+\[= Mult\left(\left\{\frac{\theta_{kit}}{\sum_{k'} \theta_{k'it}}\frac{\phi_{k}^{I_{w_{itj}}=v}}{\sum_v \phi_{vk}} \forall k \in K \right\}\right)\]
 
 \end{document}
