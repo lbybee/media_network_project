@@ -332,6 +332,23 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[p(\theta, \phi, \gamma, \alpha, \beta, z | w) \propto \prod_{i=1}^N \prod_{t=1}^T \prod_{j=1}^{J_{it}} p(w_{itj} | \phi, z_{itj}) p(z_{itj} | \theta_{it}) p(\phi_k | \beta) p(\theta_{it} | \alpha_i, \gamma_i, \delta^2) p(\alpha_i | \chi, \sigma^2) p(\gamma_i | \eta, xi^2)\]
 
+\subsection{Posterior Specification for $\alpha_i$}
+
+\[p(\alpha_i | \text{\boldmath$\alpha$}_{-i}, \gamma_i, \delta^2, \sigma^2, \chi) \propto p(\theta_i | \text{\boldmath$\alpha$}, \gamma_i, \delta^2) p(\alpha_i | \chi, \sigma^2)\]
+
+\[= \prod_{t=1}^T N(\text{\boldmath$\alpha$}^T \gamma_i, \delta^2) N(\chi, \sigma^2)\]
+
+\[\propto \exp\left\{-\frac{1}{2}\frac{(\text{\boldmath$\alpha$}^T \gamma_i)^T (\text{\boldmath$\alpha$}^T \gamma_i)}{\delta^2} + \frac{\sum_{t=1}^T (\text{\boldmath$\alpha$}^T \gamma_i)^T \theta_{it}}{\delta^2}\right\} \exp\left\{-\frac{1}{2}\frac{\alpha_i^T \alpha_i}{\sigma^2} + \frac{\alpha_i^T \chi}{\sigma^2}\right\}\]
+
+\[\propto  \exp\left\{-\frac{1}{2}\frac{(\alpha_i \gamma_{ii})^T (\alpha_i^T \gamma_{ii})}{\delta^2} + \frac{\sum_{t=1}^T (\alpha_i^T \gamma_{ii})^T \theta_{it}}{\delta^2}\right\} \exp\left\{-\frac{1}{2}\frac{\alpha_i^T \alpha_i}{\sigma^2} + \frac{\alpha_i^T \chi}{\sigma^2}\right\}\]
+
+\[\propto N(\mu_{\alpha i}, \Lambda_{\alpha i})\]
+
+\[\Lambda_{\alpha i} = \left(\frac{I}{\sigma^2} + \frac{\gamma_{ii}^2}{\delta^2}\right)^{-1}\]
+
+\[\mu_{\alpha i} = \Lambda_{\alpha i} \left(\frac{\chi}{\sigma^2} + \frac{T \gamma_{ii} \sum_{t=1}^T \theta_{it}}{\delta^2}\right)\]
+
+
 \subsection{Posterior Specification for $\gamma_i$}
 
 \[p(\gamma_i | \text{\boldmath$\alpha$}, \delta^2, \theta_i, \eta, \xi^2) \propto p(\theta_i | \text{\boldmath$\alpha$}, \gamma_i, \delta^2)p(\eta, \xi^2)\]
@@ -342,7 +359,7 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 
 \[\Lambda_{\gamma i} = \left(\frac{I}{\xi^2} + \frac{\text{\boldmath$\alpha$}\text{\boldmath$\alpha$}^T}{\delta^2}\right)^{-1}\]
 
-\[\mu_{\gamma i} = \Lambda_{\gamma i} \left(\frac{\eta}{\xi^2} + \frac{T\text{\boldmath$\alpha$} \sum_{t=1}^T \theta_{it}}{\sigma^2}\right)\]
+\[\mu_{\gamma i} = \Lambda_{\gamma i} \left(\frac{\eta}{\xi^2} + \frac{T\text{\boldmath$\alpha$} \sum_{t=1}^T \theta_{it}}{\delta^2}\right)\]
 
 \subsection{Posterior Specification for $\theta_{it}$}
 
@@ -361,8 +378,6 @@ Since this doesn't have a standard form I use the method suggested by Minmo et. 
 \[\propto Dir\left(\beta + \sum_{j=1}^{J_{z=k}}w_j \right)\]
 
 $w_j$ is this case is a $v$ vector with a one for the $w$th element and 0 everywhere else.
-
-
 
 \subsection{Posterior Specification for $z_{itj}$}
 
