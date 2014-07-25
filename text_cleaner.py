@@ -70,7 +70,7 @@ def getVocab(data_dict):
     return vocab
 
 
-def writeDictionary(data_dict, csv_f, vocab):
+def writeDictionary(data_dict, csv_f):
     """writes the dictionary to a csv file"""
 
     t_1 = datetime.now()
@@ -78,9 +78,8 @@ def writeDictionary(data_dict, csv_f, vocab):
     writer = csv.writer(open(csv_f, "wb"))
     for i, d in enumerate(data_dict):
         for n in data_dict[d]:
-            for v in vocab:
-                if v in data_dict[d][n]:
-                    writer.writerow([v, d, n, data_dict[d][n][v]])
+            for w in data_dict[d][n][w]:
+                writer.writerow([w, d, n, data_dict[d][n][w]])
         print (i * 100.) / data_ln, datetime.now() - t_1, "csv"
 
 
@@ -88,5 +87,4 @@ def fullRun(i_csv_f, o_csv_f, month_date=False):
     """does a full run"""
 
     data_dict = extractData(i_csv_f, month_date)
-    vocab = getVocab(data_dict)
-    writeDictionary(data_dict, o_csv_f, vocab)
+    writeDictionary(data_dict, o_csv_f)
