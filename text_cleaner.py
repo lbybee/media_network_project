@@ -78,7 +78,7 @@ def writeDictionary(data_dict, csv_f):
     writer = csv.writer(open(csv_f, "wb"))
     for i, d in enumerate(data_dict):
         for n in data_dict[d]:
-            for w in data_dict[d][n][w]:
+            for w in data_dict[d][n]:
                 writer.writerow([w, d, n, data_dict[d][n][w]])
         print (i * 100.) / data_ln, datetime.now() - t_1, "csv"
 

@@ -66,8 +66,8 @@ api = authorize(consumer_key, consumer_secret,
 #load user list
 
 twitter_dict = cPickle.load(open("twitter_links.pkl"))
-twitter_links = [twitter_dict[k][-1] for k in twitter_dict.keys()]
-twitter_links = [str(t) for t in twitter_links if type(t) == int]
+twitter_links = [twitter_dict[k][0].split("/")[-1] for k in twitter_dict.keys()]
+print twitter_links
 # This is a very hacky solution to a problem that I keep running into, the streaming scraper keeps crashing with an IncompleteRead error, I am going to have to rewrite a lot of this at a lower level at somepoint but this makes the scraper work for now.
 t_1 = datetime.now()
 while True:
