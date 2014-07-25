@@ -201,6 +201,23 @@ This would then suggest that our bias free estimate of quality would be an incre
 
 \subsection{Supra-Bayesian Quality Estimation}
 
+Consider that you want to estimate a measure of "quality" from the agent's beliefs about the quality of another agent following the supra-Bayesian approach mentioned above.  Following the approach taken above
+
+\[p(Q | \bar{p}) \propto p(\bar{p} | Q) p(Q)\]
+
+In this case consider that each agent's belief about the quality of another agent is independent from the other agents beliefs about the quality of the agent.  Then
+
+\[p(Q | \bar{p}) \propto p(p_1 | Q), .... p(p_N | Q) p(Q)\]
+
+However, we know that there are number of characterisitc that could effect an agents belief about the quality of another agent.  Consider that there are G biases that influence an agents belief about another agents quality.  The overall measure of quality can then be determined by
+
+\[p(p_i | Q) \propto p(p_i | Q_1) + ... + p(p_i | Q_G)\]
+
+Let $p(p_i | Q_1)$ be the bias free measure of quality.  Then we can get the bias free measure of quality by subtracting each biased measure from the observed measure of quality.  Then if we want to estimate the bias-free measure of quality this can be taken from
+
+\[p(Q_1 | \bar{p}) \propto (p(p_1 | Q) - \sum_{j=2}^G p(p_1 | Q_j)) ... (p(p_N | Q) - \sum_{j=2}^G p(p_N | Q_j)) p(Q_1)\]
+
+
 \subsection{The Significance of Border Cases}
 
 Next we consider the possibility of border agents.  The intuition behind the idea for border agents is that they are agents who have a high enough $\gamma$ value for two different agents with rather low $\gamma$ values that they allow the communication of ideas between groups who otherwise would not communicate.  More formally, consider a network with 3 agents, $i$, $j$, and $k$.  If
