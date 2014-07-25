@@ -157,6 +157,32 @@ Additionally, you have the reports for each of the $N$ firms as evidence.  Then 
 
 In this case the more likely either firm trust the other ($\gamma_{12}$ is higher or $\gamma_{21}$ is higher), the lower $p(R|\hat{\textbf{s}})$.  That is that if two firms share a similar belief about the state of the world and report the same signal, this says less than if two firms that have different beliefs report the same signal.
 
+\subsection{Supra-Bayesian Truth Estimation}
+
+Imagine that you are a decision maker observing the network of media firms.  You wish to develop some estimate of "truth" for each news story you observe based on who is posting about the news story.  To do this you may approach the problem as a supra-Bayesian.  Consider that each agent in the network has some belief about the truth of a news event $p_i(T | \textbf{s})$ where $\textbf{s}$ is some signal about the world.  The supra-Bayesian would treat each agent's beliefs as data for his own beliefs
+
+\[p(T | \bar{p}) \propto p(\bar{p} | T) p(T)\]
+
+where $\bar{p} = \{p_1(T | \textbf{s}), ... p_N(T | \textbf{s})\}$.  If each agent's beliefs and signals were indepedent then this would be the same as
+
+\[p(T | \bar{p}) \propto p(p_1 | T), .... p(p_N | T) p(T)\]
+
+However, this is obviously not the case here as each agent can observe the signals of other agents and decide what to publish based on this.  So we need some way to control for the possible noise from other signals.  Ultimately, we want the probability of each agent holding their beliefs, given only their own signals.  If we have this then we can follow the above indepedent framework.
+
+Let $p(p_i | T, \{s_j \forall j \in J\})$ be the probability of the $i$th agent holding their beliefs given a set of signals from the set of $J$ agents.  In this case $p(p_i | T, s_i)$ would be the probability of the $i$th agent holding their beliefs in the case where they receive no other signals.  This could also be written as $p(p_i | T, \!\{s_j \forall j \in J_{-i}\})$.  In the general case we can see that 
+
+\[p(p_i | T, \{s_j \forall j \in J\}) = \prod_{j=1}^J \gamma_{ij} p(p_i | T)\]
+
+because $\gamma_{ij}$ is the trust that agent $i$ holds for $j$ and represents the probability that $i$ will use a signal from $j$.  Then we can see that
+
+\[p(p_i | T, s_i) = p(p_i | T, \!\{s_j \forall j \in J_{-i}\}) = \prod_{j=1}^{J_{-i}} (1 - \gamma_{ij}) p(p_i | T)\]  
+
+Now consider the two agent case with the supra-Bayesian
+
+\[p(T | \bar{p}) \propto (1 - \gamma_{12}) p(p_1 | T) (1 - \gamma_{21}) p(p_2 | T)  p(T)\]
+
+This then provides a clear way to estimate the "truth" of a news story based on the dispersed beliefs of agents in a network.  NOTE: more on how to actually implement.
+
 \subsection{Estimating Bias-Free Quality}
 
 Next we propose a measure of bias-free quality for a given agent.  One aspect of our model that has so far been ignored is the $j$th firm's prior beliefs about the quality of the $i$th firm. We could think of this prior as the equilibrium belief about the quality of the $i$th firm.  Since $\theta_i$ and $\theta_j$ are the equilibrium beliefs for each firm about the state of the world, a reasonable choice for $p_j(H_i)$ might be $\theta_{ij}$, where $\theta_{ij} = \theta_i - \theta_j$.
@@ -172,6 +198,8 @@ Using this measure we could then think like the Bayesian agent from the sub sect
 \[= \frac{\gamma_{1i}}{\theta_{1i}}\frac{\gamma_{2i}}{\theta_{2i}}...\frac{\gamma_{Ni}}{\theta_{Ni}}p(\text{high}_i)\]
 
 This would then suggest that our bias free estimate of quality would be an increasing function of the total trust in the $i$th firm, and a decreasing function of the shared beliefs with the $i$th firm.  The intuition behind this measure is that higher quality firms should be more trusted by all firms controlling for bias.
+
+\subsection{Supra-Bayesian Quality Estimation}
 
 \subsection{The Significance of Border Cases}
 
@@ -192,6 +220,8 @@ Next we consider the possibility that there are risk averse media firms.  These 
 Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms. NOTE: This may also fit better in a different section.
 
 \section{Implementation}
+
+NOTE: This section needs to be updated, the model is now completely different.
 
 In order to estimate the trust between agents we specify a variation on the Dynamic Topic Model proposed by Blei and Lafferty\footnote{Blei and Lafferty. Dynamic Topic Model. 2006.}.  Topic models are a set of hierarchical models that assume a latent "topic" underlying the choice of words in a collection of documents.  The classical model is Latent Dirichlet Allocation (LDA), proposed by Blei et al.\footnote{Blei, Ng and Jordan. Latent Dirichlet Allocation. 2003}.  Assume that you have a collection of documents $D$ where $D = \{\textbf{w}_1, \textbf{w}_2, ... \textbf{w}_m\}$.  Each $\textbf{w}_i$ is a document consisting of a set of words $w = \{w_1, w_2, ..., w_n\}$.  LDA specifies the following generating process for the collection of documents:
 
