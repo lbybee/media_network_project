@@ -39,11 +39,22 @@ def extractData(csv_f, month_date):
     for i, row in enumerate(reader_l):
         text = row[2]
         node = row[1]
-        dateb = row[0].split(" ")
-        if month_date:
-            period = dateb[2] + " " + dateb[5]
+        if "-" not in row[0]:
+            dateb = row[0].split(" ")
+            if month_date:
+                period = dateb[2] + " " + dateb[5]
+                period = str(datetime.strptime(period, "%b %Y"))
+            else:
+                period = dateb[1] + " " + dateb[2] + " " + dateb[5]
+                period = str(datetime.strptime(period, "%b %d %Y"))
         else:
-            period = dateb[1] + " " + dateb[2] + " " + dateb[5]
+            dateb = row[0].split(" ")[0].split("-")
+            if month_date:
+                period = dateb[1] + " " + dateb[0]
+                period = str(datetime.strptime(period, "%m %Y"))
+            else:
+                period = dateb[1] + " " + dateb[2] + " " + dateb[0]
+                period = str(datetime.strptime(period, "%m %d %Y"))
         text = text.lower()
         text = rx.sub(" ", text).strip()
         for w in word_tokenize(text):
