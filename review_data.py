@@ -101,6 +101,14 @@ def nodeWordCount(data):
     return data.groupby("node")["count"].sum()
 
 
+def docWordCount(data):
+    """gets the mean word count for each period"""
+
+    subset = data
+    subset["sum"] = subset.groupby(["node", "monthyear"])["count"].transform(sum)
+    return subset.groupby("monthyear").mean()
+
+
 def topNodes(data, n_limit):
     """get the top nodes"""
 
@@ -119,7 +127,15 @@ def plotMonthlyTopNodes(data, t_nodes, fig_name):
     plt.savefig(fig_name)
 
 
+def plotDocWordC(d_word_count, fig_name):
+    """plots the document word count"""
+
+    d_word_count.plot(title="Node Month Average Word Count")
+    plt.savefig(fig_name)
+
+
 def plotNodeWordC(n_word_count, fig_name):
     """plots the word count for each node"""
 
     plt.hist(n_word_count, bins=100, title="Node Word Count Density")
+    plt.savefig(fig_name)
