@@ -27,3 +27,11 @@ plotWordC(word_count, sys.argv[5])
 # monthly top words
 top_words = topWords(data, int(sys.argv[6]))
 plotMonthlyTopWords(data, top_words, sys.argv[7])
+
+# node word count
+n_word_count = nodeWordCount(data)
+plotNodeWordC(n_word_count, sys.argv[8])
+
+# monthly top nodes
+top_nodes = topNodes(data, int(sys.argv[9]))
+plotMonthlyTopNodes(data, top_nodes, sys.argv[10])

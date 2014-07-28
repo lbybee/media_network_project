@@ -68,7 +68,6 @@ def plotMonthlyTopWords(data, t_words, fig_name):
 
     plt.figure()
     for w in t_words.index:
-        # t = data[data["word"] == w].groupby("monthyear")["count"].sum().plot()
         data[data["word"] == w].groupby("monthyear")["count"].sum().plot(label=w)
     plt.legend()
     plt.savefig(fig_name)
@@ -92,3 +91,35 @@ def plotWordC(word_count, fig_name):
     """plots the total word count, density"""
 
     plt.hist(word_count, bins=100, title="Word Count Density")
+
+
+# The remainder of this code will only work with the network data
+
+def nodeWordCount(data):
+    """gets the word count for each node"""
+
+    return data.groupby("node")["count"].sum()
+
+
+def topNodes(data, n_limit):
+    """get the top nodes"""
+
+    sort_data = data.groupby("node")["count"].sum()
+    sort_data.sort()
+    return sort_data[-n_limit:]
+
+
+def plotMonthlyTopNodes(data, t_nodes, fig_name):
+    """plots the top nodes"""
+
+    plt.figure()
+    for n in t_nodes.index:
+        data[data["node"] == n].groupby("monthyear")["count"].sum().plot(label=n)
+    plt.legend()
+    plt.savefig(fig_name)
+
+
+def plotNodeWordC(n_word_count, fig_name):
+    """plots the word count for each node"""
+
+    plt.hist(n_word_count, bins=100, title="Node Word Count Density")
