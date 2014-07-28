@@ -1,0 +1,50 @@
+from datetime import datetime
+import matplotlib.pyplot as plt
+import csv
+import pandas as pd
+import random
+
+
+def buildSubsetData(csv_f, var_names, date_var, rand_n):
+    """takes a random subset of the data to test the code"""
+
+    reader = csv.reader(open(csv_f, "rb"))
+    data = [r for r in reader]
+    random_mx = len(data)
+    data = [data[random.randint(0, random_mx)] for i in range(rand_n)]
+    data = pd.DataFrame(data, columns=var_names)
+    data[date_var] = data[date_var].apply(pd.to_datetime)
+    data["month"] = data[date_var].apply(lambda x: x.month)
+    data["day"] = data[date_var].apply(lambda x: x.day)
+    data["year"] = data[date_var].apply(lambda x: x.year)
+    data["monthyear"] = data[date_var].apply(lambda x: datetime(x.year, x.month, 1))
+    data["count"] = data["count"].astype(int)
+    return data
+
+
+def buildData(csv_f, var_names, date_var):
+    """builds the dataset"""
+
+    reader = csv.reader(open(csv_f, "rb"))
+    data = [r for r in reader]
+    data = pd.DataFrame(data, columns=var_names)
+    data[date_var] = data[date_var].apply(pd.to_datetime)
+    data["month"] = data[date_var].apply(lambda x: x.month)
+    data["day"] = data[date_var].apply(lambda x: x.day)
+    data["year"] = data[date_var].apply(lambda x: x.year)
+    data["monthyear"] = data[date_var].apply(lambda x: datetime(x.year, x.month, 1))
+    data["count"] = data["count"].astype(int)
+    return data
+
+
+def monthlyWordCount(data):
+    """generates the word count for each month"""
+
+    return data.groupby("monthyear")["count"].sum()
+
+
+def plotMonthlyWordC(word_count):
+    """plots the monthly word count"""
+
+    word_count.plot(xlabel)
+    plt.savefig(fig_name)
