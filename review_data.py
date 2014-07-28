@@ -43,16 +43,48 @@ def monthlyWordCount(data):
     return data.groupby("monthyear")["count"].sum()
 
 
+def monthlyUniqueWordC(data):
+    """generates the unique word count monthly"""
+
+    return data.groupby("monthyear")["count"].size()
+
+
 def wordCount(data):
     """generates the total count for each word"""
 
     return data.groupby("word")["count"].sum()
 
 
+def topWords(data, t_limit):
+    """gets the top words"""
+
+    sort_data = data.groupby("word")["count"].sum()
+    sort_data.sort()
+    return sort_data[-t_limit:]
+
+
+def plotMonthlyTopWords(data, t_words, fig_name):
+    """plots the top words"""
+
+    plt.figure()
+    for w in t_words.index:
+        # t = data[data["word"] == w].groupby("monthyear")["count"].sum().plot()
+        data[data["word"] == w].groupby("monthyear")["count"].sum().plot(label=w)
+    plt.legend()
+    plt.savefig(fig_name)
+
+
 def plotMonthlyWordC(m_word_count, fig_name):
     """plots the monthly word count"""
 
     m_word_count.plot(title="Word Count")
+    plt.savefig(fig_name)
+
+
+def plotMonthlyUniqueWordC(um_word_count, fig_name):
+    """plots the unique monthly word count"""
+
+    um_word_count.plot(title="Unique Word Count")
     plt.savefig(fig_name)
 
 

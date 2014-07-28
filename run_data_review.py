@@ -16,6 +16,14 @@ print "got real data"
 m_word_count = monthlyWordCount(data)
 plotMonthlyWordC(m_word_count, sys.argv[3])
 
+# unique monthly word count
+um_word_count = monthlyUniqueWordC(data)
+plotMonthlyUniqueWordC(um_word_count, sys.argv[4])
+
 # total word count
 word_count = wordCount(data)
-plotWordC(word_count, sys.argv[4])
+plotWordC(word_count, sys.argv[5])
+
+# monthly top words
+top_words = topWords(data, int(sys.argv[6]))
+plotMonthlyTopWords(data, top_words, sys.argv[7])
