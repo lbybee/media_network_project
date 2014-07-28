@@ -43,8 +43,20 @@ def monthlyWordCount(data):
     return data.groupby("monthyear")["count"].sum()
 
 
-def plotMonthlyWordC(word_count):
+def wordCount(data):
+    """generates the total count for each word"""
+
+    return data.groupby("word")["count"].sum()
+
+
+def plotMonthlyWordC(m_word_count, fig_name):
     """plots the monthly word count"""
 
-    word_count.plot(xlabel)
+    m_word_count.plot(title="Word Count")
     plt.savefig(fig_name)
+
+
+def plotWordC(word_count, fig_name):
+    """plots the total word count, density"""
+
+    plt.hist(word_count, bins=100, title="Word Count Density")
