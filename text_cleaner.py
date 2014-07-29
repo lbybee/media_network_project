@@ -58,10 +58,13 @@ def extractData(csv_f, stemming, month_date):
         text = text.lower()
         text = rx.sub(" ", text).strip()
         for w in word_tokenize(text):
-            if stemming == 1:
-                w = PorterStemmer().stem_word(w)
-            if w not in stopwords.words("english"):
-                data_dict = addWordTDict(w, period, node, data_dict)
+            # remove urls
+            if "http" not in w:
+                # do any stemming
+                if stemming == 1:
+                    w = PorterStemmer().stem_word(w)
+                if w not in stopwords.words("english"):
+                    data_dict = addWordTDict(w, period, node, data_dict)
         print (i * 100.) / reader_ln, datetime.now() - t_1
     return data_dict
 
