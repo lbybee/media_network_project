@@ -39,24 +39,28 @@ def extractData(csv_f, stemming, month_date):
     for i, row in enumerate(reader_l):
         text = row[2]
         node = row[1]
-        if "-" not in row[0]:
-            dateb = row[0].split(" ")
-            if month_date:
-                period = dateb[2] + " " + dateb[5]
-                period = str(datetime.strptime(period, "%b %Y"))
-            else:
-                period = dateb[1] + " " + dateb[2] + " " + dateb[5]
-                period = str(datetime.strptime(period, "%b %d %Y"))
-        else:
-            dateb = row[0].split(" ")[0].split("-")
-            if month_date:
-                period = dateb[1] + " " + dateb[0]
-                period = str(datetime.strptime(period, "%m %Y"))
-            else:
-                period = dateb[1] + " " + dateb[2] + " " + dateb[0]
-                period = str(datetime.strptime(period, "%m %d %Y"))
+        # new period code
+        date = datetime.strptime(row[0], "%a %b %D %H:%M:%S %z %Y")
+        # This is the old period code, I will probably remove it soon
+        #if "-" not in row[0]:
+        #    dateb = row[0].split(" ")
+        #    if month_date:
+        #        period = dateb[2] + " " + dateb[5]
+        #        period = str(datetime.strptime(period, "%b %Y"))
+        #    else:
+        #        period = dateb[1] + " " + dateb[2] + " " + dateb[5]
+        #        period = str(datetime.strptime(period, "%b %d %Y"))
+        #else:
+        #    dateb = row[0].split(" ")[0].split("-")
+        #    if month_date:
+        #        period = dateb[1] + " " + dateb[0]
+        #        period = str(datetime.strptime(period, "%m %Y"))
+        #    else:
+        #        period = dateb[1] + " " + dateb[2] + " " + dateb[0]
+        #        period = str(datetime.strptime(period, "%m %d %Y"))
         text = text.lower()
         text = rx.sub(" ", text).strip()
+        period = date.strftime("%Y-%m-%d %H")
         for w in word_tokenize(text):
             # remove urls
             if "http" not in w:
