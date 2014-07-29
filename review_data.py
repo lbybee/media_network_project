@@ -1,5 +1,6 @@
 from datetime import datetime
 import matplotlib.pyplot as plt
+import numpy as np
 import csv
 import pandas as pd
 import random
@@ -14,12 +15,9 @@ def buildSubsetData(csv_f, var_names, date_var, rand_n):
     data = [data[random.randint(0, random_mx)] for i in range(rand_n)]
     data = pd.DataFrame(data, columns=var_names)
     data[date_var] = pd.to_datetime(data[date_var])
-    print "pd to datetime"
     # data["month"] = data[date_var].apply(lambda x: x.month)
     # data["day"] = data[date_var].apply(lambda x: x.day)
     # data["year"] = data[date_var].apply(lambda x: x.year)
-    data["monthyear"] = data[date_var].apply(lambda x: datetime(x.year, x.month, 1))
-    print "monthyear"
     data["count"] = data["count"].astype(int)
     print "count"
     return data
@@ -33,19 +31,17 @@ def buildData(csv_f, var_names, date_var):
     cols = [r for r in reader]
     ln_cols = len(cols)
     steps = ln_cols / 5000
-    data = pd.DataFrame(columns=var_names + ["monthyear"])
+    data = pd.DataFrame(columns=var_names)
     for i in range(steps):
         chk = cols[i * 5000: (i + 1) * 5000]
         chk = pd.DataFrame(chk, columns=var_names)
         chk[date_var] = pd.to_datetime(chk[date_var])
-        chk["monthyear"] = chk[date_var].apply(lambda x: datetime(x.year, x.month, 1))
         chk["count"] = chk["count"].astype(int)
         data = data.append(chk)
         print (i * 100.) / steps, datetime.now() - t_1
     chk = cols[steps * 5000:]
     chk = pd.DataFrame(chk, columns=var_names)
     chk[date_var] = pd.to_datetime(chk[date_var])
-    chk["monthyear"] = chk[date_var].apply(lambda x: datetime(x.year, x.month, 1))
     chk["count"] = chk["count"].astype(int)
     data = data.append(chk)
     return data
@@ -54,13 +50,13 @@ def buildData(csv_f, var_names, date_var):
 def monthlyWordCount(data):
     """generates the word count for each month"""
 
-    return data.groupby("monthyear")["count"].sum()
+    return data.groupby("date")["count"].sum()
 
 
 def monthlyUniqueWordC(data):
     """generates the unique word count monthly"""
 
-    return data.groupby("monthyear")["count"].size()
+    return data.groupby("date")["count"].size()
 
 
 def wordCount(data):
@@ -82,7 +78,7 @@ def plotMonthlyTopWords(data, t_words, fig_name):
 
     plt.figure()
     for w in t_words.index:
-        data[data["word"] == w].groupby("monthyear")["count"].sum().plot(label=w)
+        data[data["word"] == w].groupby("date")["count"].sum().plot(label=w)
     plt.legend()
     plt.savefig(fig_name)
     plt.clf()
@@ -123,9 +119,8 @@ def nodeWordCount(data):
 def docWordCount(data):
     """gets the mean word count for each period"""
 
-    subset = data
-    subset["sum"] = subset.groupby(["node", "monthyear"])["count"].transform(sum)
-    return subset.groupby("monthyear").mean()
+    g = data.groupby(["node", "date"]).sum()
+    return g.mean(level="date")
 
 
 def topNodes(data, n_limit):
@@ -141,7 +136,7 @@ def plotMonthlyTopNodes(data, t_nodes, fig_name):
 
     plt.figure()
     for n in t_nodes.index:
-        data[data["node"] == n].groupby("monthyear")["count"].sum().plot(label=n)
+        data[data["node"] == n].groupby("date")["count"].sum().plot(label=n)
     plt.legend()
     plt.savefig(fig_name)
     plt.clf()
