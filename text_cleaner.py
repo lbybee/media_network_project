@@ -25,7 +25,7 @@ def addWordTDict(w, date, node, data_dict):
     return data_dict
 
 
-def extractData(csv_f, month_date):
+def extractData(csv_f, stemming, month_date):
     """extracts the data from the csv"""
 
     rx = re.compile("\W+")
@@ -58,7 +58,8 @@ def extractData(csv_f, month_date):
         text = text.lower()
         text = rx.sub(" ", text).strip()
         for w in word_tokenize(text):
-            w = PorterStemmer().stem_word(w)
+            if stemming == 1:
+                w = PorterStemmer().stem_word(w)
             if w not in stopwords.words("english"):
                 data_dict = addWordTDict(w, period, node, data_dict)
         print (i * 100.) / reader_ln, datetime.now() - t_1
@@ -94,8 +95,8 @@ def writeDictionary(data_dict, csv_f):
         print (i * 100.) / data_ln, datetime.now() - t_1, "csv"
 
 
-def fullRun(i_csv_f, o_csv_f, month_date=False):
+def fullRun(i_csv_f, o_csv_f, stemming=0, month_date=False):
     """does a full run"""
 
-    data_dict = extractData(i_csv_f, month_date)
+    data_dict = extractData(i_csv_f, stemming, month_date)
     writeDictionary(data_dict, o_csv_f)
