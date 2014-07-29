@@ -13,27 +13,41 @@ def buildSubsetData(csv_f, var_names, date_var, rand_n):
     random_mx = len(data)
     data = [data[random.randint(0, random_mx)] for i in range(rand_n)]
     data = pd.DataFrame(data, columns=var_names)
-    data[date_var] = data[date_var].apply(pd.to_datetime)
-    data["month"] = data[date_var].apply(lambda x: x.month)
-    data["day"] = data[date_var].apply(lambda x: x.day)
-    data["year"] = data[date_var].apply(lambda x: x.year)
+    data[date_var] = pd.to_datetime(data[date_var])
+    print "pd to datetime"
+    # data["month"] = data[date_var].apply(lambda x: x.month)
+    # data["day"] = data[date_var].apply(lambda x: x.day)
+    # data["year"] = data[date_var].apply(lambda x: x.year)
     data["monthyear"] = data[date_var].apply(lambda x: datetime(x.year, x.month, 1))
+    print "monthyear"
     data["count"] = data["count"].astype(int)
+    print "count"
     return data
 
 
 def buildData(csv_f, var_names, date_var):
     """builds the dataset"""
 
+    t_1 = datetime.now()
     reader = csv.reader(open(csv_f, "rb"))
-    data = [r for r in reader]
-    data = pd.DataFrame(data, columns=var_names)
-    data[date_var] = data[date_var].apply(pd.to_datetime)
-    data["month"] = data[date_var].apply(lambda x: x.month)
-    data["day"] = data[date_var].apply(lambda x: x.day)
-    data["year"] = data[date_var].apply(lambda x: x.year)
-    data["monthyear"] = data[date_var].apply(lambda x: datetime(x.year, x.month, 1))
-    data["count"] = data["count"].astype(int)
+    cols = [r for r in reader]
+    ln_cols = len(cols)
+    steps = ln_cols / 5000
+    data = pd.DataFrame(columns=var_names + ["monthyear"])
+    for i in range(steps):
+        chk = cols[i * 5000: (i + 1) * 5000]
+        chk = pd.DataFrame(chk, columns=var_names)
+        chk[date_var] = pd.to_datetime(chk[date_var])
+        chk["monthyear"] = chk[date_var].apply(lambda x: datetime(x.year, x.month, 1))
+        chk["count"] = chk["count"].astype(int)
+        data = data.append(chk)
+        print (i * 100.) / steps, datetime.now() - t_1
+    chk = cols[steps * 5000:]
+    chk = pd.DataFrame(chk, columns=var_names)
+    chk[date_var] = pd.to_datetime(chk[date_var])
+    chk["monthyear"] = chk[date_var].apply(lambda x: datetime(x.year, x.month, 1))
+    chk["count"] = chk["count"].astype(int)
+    data = data.append(chk)
     return data
 
 
@@ -71,6 +85,7 @@ def plotMonthlyTopWords(data, t_words, fig_name):
         data[data["word"] == w].groupby("monthyear")["count"].sum().plot(label=w)
     plt.legend()
     plt.savefig(fig_name)
+    plt.clf()
 
 
 def plotMonthlyWordC(m_word_count, fig_name):
@@ -78,6 +93,7 @@ def plotMonthlyWordC(m_word_count, fig_name):
 
     m_word_count.plot(title="Word Count")
     plt.savefig(fig_name)
+    plt.clf()
 
 
 def plotMonthlyUniqueWordC(um_word_count, fig_name):
@@ -85,12 +101,15 @@ def plotMonthlyUniqueWordC(um_word_count, fig_name):
 
     um_word_count.plot(title="Unique Word Count")
     plt.savefig(fig_name)
+    plt.clf()
 
 
 def plotWordC(word_count, fig_name):
     """plots the total word count, density"""
 
-    plt.hist(word_count, bins=100, title="Word Count Density")
+    plt.hist(word_count, bins=100)
+    plt.savefig(fig_name)
+    plt.clf()
 
 
 # The remainder of this code will only work with the network data
@@ -125,6 +144,7 @@ def plotMonthlyTopNodes(data, t_nodes, fig_name):
         data[data["node"] == n].groupby("monthyear")["count"].sum().plot(label=n)
     plt.legend()
     plt.savefig(fig_name)
+    plt.clf()
 
 
 def plotDocWordC(d_word_count, fig_name):
@@ -132,10 +152,12 @@ def plotDocWordC(d_word_count, fig_name):
 
     d_word_count.plot(title="Node Month Average Word Count")
     plt.savefig(fig_name)
+    plt.clf()
 
 
 def plotNodeWordC(n_word_count, fig_name):
     """plots the word count for each node"""
 
-    plt.hist(n_word_count, bins=100, title="Node Word Count Density")
+    plt.hist(n_word_count, bins=100)
     plt.savefig(fig_name)
+    plt.clf()
