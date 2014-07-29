@@ -40,7 +40,7 @@ def extractData(csv_f, stemming, month_date):
         text = row[2]
         node = row[1]
         # new period code
-        date = datetime.strptime(row[0], "%a %b %D %H:%M:%S %z %Y")
+        date = datetime.strptime(row[0], "%a %b %d %H:%M:%S %z %Y")
         # This is the old period code, I will probably remove it soon
         #if "-" not in row[0]:
         #    dateb = row[0].split(" ")
