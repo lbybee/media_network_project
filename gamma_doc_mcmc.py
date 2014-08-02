@@ -25,3 +25,12 @@ def alphaPost(gamma_ii, delta2, sigm2, xi, theta_i, I, T):
     mu_ai = (xi / sigma2 * I + (T * gamma_ii * theta_i.sum(axis=0)) / delta2)
     mu_ai = dot(transpose(lambda_ai), mu_ai)
     return random.multivariate_normal(mu_ai, lambda_ai)
+
+
+def gammaPost(alpha, chi2, delta2, eta, theta_i, I, T):
+    """generates the posterior estimate for the ith gamma"""
+
+    lambda_gi = linalg.inv(1 / chi2 * I + dot(alpha, transpose(alpha)) / delta2)
+    mu_gi = (eta / chi2 * I + (T * dot(alpha, theta_i.sum(axis=0))) / delta2)
+    mu_gi = dot(transpose(lambda_gi, mu_gi))
+    return random.multivariate_normal(mu_gi, lambda_gi)
