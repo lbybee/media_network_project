@@ -96,5 +96,5 @@ def logitNormalSampler(z, theta_it, alpha, gamma_i delta2):
                 un_u[j] = random.uniform(exp(theta_kit) / exp(sum(theta_it)), 1)
         mx_mn = max(un_l)
         mn_mx = min(un_u)
-        theta_itp[i] = stats.truncnorm.rvs(mx_mn, mn_mx, alpha[i] * gamma_i[i], delta2)
+        theta_itp[i] = stats.truncnorm.rvs(mx_mn, mn_mx, sum(alpha[:,i] * gamma_i[i]), delta2)
     return theta_itp
