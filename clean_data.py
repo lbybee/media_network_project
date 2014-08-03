@@ -30,16 +30,47 @@ def cleanData(csv_f, output_f):
 
 
 def sortByDate(data):
-    """returns the dates and values sorted by date"""
+    """returns the dates and values sorted by date, this drops
+    the dictionary structure"""
 
-    dt_dates = []
-    for d in data.keys():
-        dt = datetime.strptime(d, "%Y-%m-%d %H")
-        dt_dates.append(dt)
-    dt_dates.sort()
-    dates = [dt.strftime("%Y-%m-%d %H") for dt in dt_dates]
-    values = [data[d] for d in dates]
-    return dates, values
+    sorted_values = []
+    node_dates = []
+    nodes = data.keys()
+    for n in nodes:
+        dt_dates = [datetime.strptime(d, "%Y-%m-%d %H") for d in data[n]]
+        dt_dates.sort()
+        dates = [dt.strftime("%Y-%m-%d %H") for dt in dt_dates]
+        values = data[n][d] for d in dates]
+        sorted_values.append(values)
+        node_dates.append(dates)
+    return nodes, node_dates, sorted_values
+
+
+def buildVocab(text):
+    """builds the vocab from text"""
+    
+    vocab = []
+    for n in text:
+        for d in n:
+            for w in d:
+                if w not in vocab:
+                    vocab.append(w)
+    return vcoab
+
+
+def convertToVector(text, vocab):
+    """converts text to vectors"""
+    
+    n_text = []
+    for n in text:
+        n_node = []
+        for d in n:
+            n_date = []
+            for w in d:
+                n_date.append([1 if i == vocab.index(w) else 0 for i in range(len(vocab))])
+            n_node.append(n_date)
+        n_text.append(n_node)
+    return n_text
 
 
 def cleanRData(i_csv_f, o_csv_f):
