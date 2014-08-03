@@ -100,6 +100,18 @@ def logitNormalSampler(z, theta_it, alpha, gamma_i delta2):
     return theta_itp
 
 
+def genVocab(graph, z, K):
+    """generates the vocab for phi"""
+    
+    vocab = [[] for i in range(K)]
+    for z_g, node in zip(z, graph):
+        for z_n, docs in zip(z_g, node):
+            for z_d, wrds in zip(z_n, docs):
+                for z_w, w in zip(z_d, wrds):
+                    vocab[where(z_w==1)[0][0]].append(w)
+    return vocab
+
+
 def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     """does the full run"""
 
@@ -111,7 +123,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     alpha = array([[1. for k in range(K)] for i in range(N)])
     phi = array([[1. for v in range(V)] for k in range(K)])
     theta = array([[1. for t in range(T)] for n in range(N)])
-    z = array([[[1. for w in range(len(wrds))] for wrds in docs] for docs in node])
+    z = array([[[[1. if w == 0 else 0. for w in range(len(wrds))] for wrds in docs] for docs in node] for node in graph])
     print "values initalized"
 
     # initalize storage
@@ -119,7 +131,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     alpha_s = array([[[nan for k in range(K)] for i in range(N)] for s in range(S)])
     phi_s = array([[[nan for v in range(V)] for k in range(K)] for s in range(S)])
     theta_s = array([[[nan for t in range(T)] for n in range(N)] for s in range(S)])
-    z_s = array([[[[nan for w in range(len(wrds))] for wrds in docs] for docs in node] for s in range(S)])
+    z_s = array([[[[[nan for w in range(len(wrds))] for wrds in docs] for docs in node] for node in graph] for s in range(S)])
     print "storage initalized"
 
     # initialize start time
@@ -154,10 +166,11 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
                     z[i][t][w] = zPost(theta[i][t], graph[i][t][w], phi)
         
         I = identity(V)
+        vocab = genVocab(z, graph)
 
         for i in range(K):
 
-            w_ks = vocab[k].sum(axis=0)
+            w_ks = sum(vocab[k])
 
             phi_s[s][k] = phi[k]
             phi[k] = phiPost(beta, w_ks)
