@@ -37,15 +37,17 @@ def gammaPost(alpha, chi2, delta2, eta, theta_is, I, T):
     return random.multivariate_normal(mu_gi, lambda_gi)
 
 
-def phiPost(beta, w_ks):
+def phiPost(beta, w_k):
     """generates the posterior estimate for phi_k
 
-    * w_ks: w_k.sum(axis=0)
+    * vector of word indices
     * beta: Vx1 vector
 
     """
 
-    return random.dirichlet(beta + w_ks)
+    for w in w_k:
+        beta[w] += 1
+    return random.dirichlet(beta)
 
 
 def zPost(theta_it, w, phi):
@@ -60,15 +62,14 @@ def zPost(theta_it, w, phi):
     
     l_theta_it = len(theta_it)
     theta_phi = zeros(l_theta_it)
-    w_ind = where(w==1)[0][0]
     i = 0
     for theta_itk, phi_k in zip(theta_it, phi):
-        theta_phi[0] = (theta_itk / sum(theta_it)) * (phi_k[w_ind] / sum(phi_k))
+        theta_phi[0] = (theta_itk / sum(theta_it)) * (phi_k[w] / sum(phi_k))
         i += 1
     return random.multinomial(1, theta_phi)
 
 
-def logitNormalSampler(z, theta_it, alpha, gamma_i delta2):
+def logitNormalSampler(z, theta_it, alpha, gamma_i, delta2):
     """generates a augmented variable sample for theta/phi, this is a general
     function since they both have the same form.
     
@@ -123,7 +124,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     alpha = array([[1. for k in range(K)] for i in range(N)])
     phi = array([[1. for v in range(V)] for k in range(K)])
     theta = array([[1. for t in range(T)] for n in range(N)])
-    z = array([[[[1. if w == 0 else 0. for w in range(len(wrds))] for wrds in docs] for docs in node] for node in graph])
+    z = array([[[1 for w in range(len(date))] for date in node] for node in graph])
     print "values initalized"
 
     # initalize storage
@@ -131,7 +132,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     alpha_s = array([[[nan for k in range(K)] for i in range(N)] for s in range(S)])
     phi_s = array([[[nan for v in range(V)] for k in range(K)] for s in range(S)])
     theta_s = array([[[nan for t in range(T)] for n in range(N)] for s in range(S)])
-    z_s = array([[[[[nan for w in range(len(wrds))] for wrds in docs] for docs in node] for node in graph] for s in range(S)])
+    z_s = array([[[[nan for w in range(len(date))] for date in node] for node in graph] for s in range(S)])
     print "storage initalized"
 
     # initialize start time
@@ -152,7 +153,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
             alpha_s[s][i] = alpha[i]
             alpha[i] = alphaPost(gamma[i][i], delta2, sigma2, xi, theta_is, I, T)
 
-            for t in range(T):
+            for t in range(len(graph[i])):
 
                 I = identity(K)
                 w_it = len(graph[i][t])
@@ -170,10 +171,8 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
 
         for i in range(K):
 
-            w_ks = sum(vocab[k])
-
             phi_s[s][k] = phi[k]
-            phi[k] = phiPost(beta, w_ks)
+            phi[k] = phiPost(beta, vocab[k])
 
         print datetime.now() - t_1, (s * 100.) / S
 
