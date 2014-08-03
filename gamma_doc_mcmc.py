@@ -2,7 +2,7 @@ from numpy import *
 from datetime import datetime
 from scipy import stats
 
-def alphaPost(gamma_ii, delta2, sigm2, xi, theta_is, I, T):
+def alphaPost(gamma_ii, delta2, sigma2, xi, theta_is, I, T):
     """generates the posterior estimate for the ith alpha
     
     * delta2: scalar
@@ -98,3 +98,70 @@ def logitNormalSampler(z, theta_it, alpha, gamma_i delta2):
         mn_mx = min(un_u)
         theta_itp[i] = stats.truncnorm.rvs(mx_mn, mn_mx, sum(alpha[:,i] * gamma_i[i]), delta2)
     return theta_itp
+
+
+def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
+    """does the full run"""
+
+    # gen vocab
+    vocab = genPeriodVocab(graph, K)
+
+    # initalize values
+    gamma = array([[1. / N for i in range(N)] for i in range(N)])
+    alpha = array([[1. for k in range(K)] for i in range(N)])
+    phi = array([[1. for v in range(V)] for k in range(K)])
+    theta = array([[1. for t in range(T)] for n in range(N)])
+    z = array([[[1. for w in range(len(wrds))] for wrds in docs] for docs in node])
+    print "values initalized"
+
+    # initalize storage
+    gamma_s = array([[[nan for i in range(N)] for i in range(N)] for s in range(S)])
+    alpha_s = array([[[nan for k in range(K)] for i in range(N)] for s in range(S)])
+    phi_s = array([[[nan for v in range(V)] for k in range(K)] for s in range(S)])
+    theta_s = array([[[nan for t in range(T)] for n in range(N)] for s in range(S)])
+    z_s = array([[[[nan for w in range(len(wrds))] for wrds in docs] for docs in node] for s in range(S)])
+    print "storage initalized"
+
+    # initialize start time
+    t_1 = datetime.now()
+
+    for s in range(S):
+
+        for i in range(N):
+
+            I = identity(N)
+            theta_is = theta[i].sum(axis=0)
+
+            gamma_s[s][i] = gamma[i]
+            gamma[i] = gammaPost(alpha, chi2, delta2, eta, theta_is, I, T)
+
+            I = identity(K)
+
+            alpha_s[s][i] = alpha[i]
+            alpha[i] = alphaPost(gamma[i][i], delta2, sigma2, xi, theta_is, I, T)
+
+            for t in range(T):
+
+                I = identity(K)
+                w_it = len(graph[i][t])
+
+                theta_s[s][i][t] = theta[i][t]
+                theta[i][t] = logitNormalSampler(z[i][t], theta[i][t], alpha, gamma[i], delta2)
+
+                for w in range(w_it):
+
+                    z_s[s][i][t][w] = z[i][t][w]
+                    z[i][t][w] = zPost(theta[i][t], graph[i][t][w], phi)
+        
+        I = identity(V)
+
+        for i in range(K):
+
+            w_ks = vocab[k].sum(axis=0)
+
+            phi_s[s][k] = phi[k]
+            phi[k] = phiPost(beta, w_ks)
+
+        print datetime.now() - t_1, (s * 100.) / S
+
+    return gamma_s, alpha_s, phi_s, theta_s, z_s
