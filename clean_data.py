@@ -97,7 +97,7 @@ def cleanRData(i_csv_f, o_csv_f):
 
     node_dict = {}
 
-    reader = csv.reader(open(o_csv_f, "rb"))
+    reader = csv.reader(open(i_csv_f, "rb"))
     reader_l = list(reader)
     reader_ln = len(reader_l)
     for i, r in enumerate(reader_l):
