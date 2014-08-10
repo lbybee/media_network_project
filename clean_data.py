@@ -101,9 +101,9 @@ def cleanRData(i_csv_f, o_csv_f):
     reader_l = list(reader)
     reader_ln = len(reader_l)
     for i, r in enumerate(reader_l):
-        text = row[2]
-        node = row[1]
-        date = datetime.strptime(row[0], "%a %b %d %H:%M:%S +0000 %Y")
+        text = r[2]
+        node = r[1]
+        date = datetime.strptime(r[0], "%a %b %d %H:%M:%S +0000 %Y")
         date = date.strftime("%Y-%m-%d %H:00:00")
         if node not in node_dict:
             node_dict[node] = {}
