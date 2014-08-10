@@ -113,17 +113,14 @@ def genVocab(graph, z, K):
     return vocab
 
 
-def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
+def fullRun(N, K, V, S, graph, xi, sigma2, delta2, eta, chi2):
     """does the full run"""
-
-    # gen vocab
-    vocab = genPeriodVocab(graph, K)
 
     # initalize values
     gamma = array([[1. / N for i in range(N)] for i in range(N)])
     alpha = array([[1. for k in range(K)] for i in range(N)])
     phi = array([[1. for v in range(V)] for k in range(K)])
-    theta = array([[1. for t in range(T)] for n in range(N)])
+    theta = array([[1. for t in range(len(node))] for node in graph])
     z = array([[[1 for w in range(len(date))] for date in node] for node in graph])
     print "values initalized"
 
@@ -131,7 +128,7 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
     gamma_s = array([[[nan for i in range(N)] for i in range(N)] for s in range(S)])
     alpha_s = array([[[nan for k in range(K)] for i in range(N)] for s in range(S)])
     phi_s = array([[[nan for v in range(V)] for k in range(K)] for s in range(S)])
-    theta_s = array([[[nan for t in range(T)] for n in range(N)] for s in range(S)])
+    theta_s = array([[[nan for t in range(len(node))] for node in graph] for s in range(S)])
     z_s = array([[[[nan for w in range(len(date))] for date in node] for node in graph] for s in range(S)])
     print "storage initalized"
 
@@ -143,6 +140,9 @@ def fullRun(N, K, T, V, S, graph, xi, sigma2, delta2, eta, chi2):
         for i in range(N):
 
             I = identity(N)
+
+            T = len(graph[i])
+
             theta_is = theta[i].sum(axis=0)
 
             gamma_s[s][i] = gamma[i]
