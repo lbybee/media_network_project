@@ -8,7 +8,7 @@ tab <- read.csv("8-10-2014_node_data.csv", header=FALSE)
 tab[,2] <- as.POSIXct(tab[,2])
 
 # order by node and date
-tab <- tab[order((tab[,1], tab[,2])),]
+tab <- tab[order(tab[,1], tab[,2]),]
 
 # save empty data
 save.image("EmptyData.RData")
