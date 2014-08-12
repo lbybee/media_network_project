@@ -127,8 +127,8 @@ def cleanRData(i_csv_f, o_csv_f):
         text = r[2]
         node = r[1]
         date = datetime.strptime(r[0], "%a %b %d %H:%M:%S +0000 %Y")
-        if date.hour >= 12:
-            date = date.replace(hour = (date.hour - date.hour % 12))
+        if date.hour >= 6:
+            date = date.replace(hour = (date.hour - date.hour % 6))
         else:
             date = date.replace(hour = 0)
         date = date.strftime("%Y-%m-%d %H:00:00")
@@ -148,7 +148,7 @@ def cleanRData(i_csv_f, o_csv_f):
     mx_date = 0
     for n in node_dict:
         for d in node_dict[n].keys():
-            if len(node_dict[n][d].split(" ")) < 1000:
+            if len(node_dict[n][d]) < 10:
                 del node_dict[n][d]
     for n in node_dict:
         t_date = len(node_dict[n])
