@@ -124,10 +124,6 @@ def cleanRData(i_csv_f, o_csv_f):
     writer = csv.writer(open(o_csv_f, "wb"))
     mx_date = 0
     for n in node_dict:
-        for d in node_dict[n].keys():
-            if len(node_dict[n][d].split(" ")) < 1000:
-                del node_dict[n][d]
-    for n in node_dict:
         t_date = len(node_dict[n])
         if t_date > mx_date:
             mx_date = t_date

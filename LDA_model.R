@@ -2,7 +2,7 @@ library(tm)
 library(topicmodels)
 library(ggplot2)
 
-tab <- read.csv("8-10-2014_node_data.csv", header=FALSE)
+tab <- read.csv("8-11-2014_node_data.csv", header=FALSE)
 
 # fix datetime
 tab[,2] <- as.POSIXct(tab[,2])
