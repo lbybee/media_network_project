@@ -1,6 +1,7 @@
 library(tm)
 library(topicmodels)
 library(ggplot2)
+library(MASS)
 
 tab <- read.csv("8-11-2014_node_data.csv", header=FALSE)
 
@@ -31,4 +32,84 @@ dtm <- DocumentTermMatrix(corpus)
 # save the document term matrix data
 save.image("DTM.RData")
 
-model = LDA(dtm, 5)
+model = LDA(dtm, 20)
+
+# correlation code
+K <- 20
+
+# ols code
+
+nodes <- unique(tab[,1])
+ln_nodes <- length(nodes)
+stp <- length(tab[,1]) / ln_nodes
+
+# initalize storage
+reg_l <- list()
+p_l <- list()
+
+# iterate through the nodes
+for(i in 1:20){
+    reg_mat <- matrix(NA, ln_nodes, ln_nodes)
+    p_mat <- matrix(NA, ln_nodes, ln_nodes)
+    for(j in 1:ln_nodes){
+        D <- model@gamma[,i][((j-1)*stp + 2):(j*stp)]
+        reg_data <- data.frame(D)
+        for(k in 1:ln_nodes){
+            reg_data[paste("I", k, sep="")] <- model@gamma[,i][((k-1)*stp + 1):(k*stp -1)]
+        }
+        mod <- lm(D ~ ., data=reg_data)
+        for(k in 1:ln_nodes){
+            reg_mat[j, k] <- coef(summary(mod))[,1][k]
+            p_mat[j, k] <- coef(summary(mod))[,4][k]
+        }
+    }
+    reg_l[[i]] <- reg_mat
+    p_l[[i]] <- p_mat
+}
+
+
+# build data
+theta_n <- list()
+for (i in 1:(stp-1)){
+    NK_mat <- matrix(NA, ln_nodes, K)
+    for(j in 1:ln_nodes){
+        NK_mat[j,] <- model@gamma[(i - 1) * ln_nodes + j,]
+    }
+    theta_n[[i]] <- NK_mat
+}
+
+# build theta
+theta <- list()
+for(i in 1:ln_nodes){
+    theta_i <- matrix(NA, stp - 1, K)
+    for(j in 2:stp){
+        theta_i[j-1,] <- model@gamma[(j - 1) * ln_nodes + i,]
+    }
+    theta[[i]] <- theta_i
+}
+
+
+I_K <- diag(20)
+I_N <- diag(ln_nodes)
+
+eta <- 1.5
+
+# mcmc results
+gamma <- matrix(NA, ln_nodes, ln_nodes)
+pval1 <- matrix(NA, ln_nodes, ln_nodes)
+pval2 <- matrix(NA, ln_nodes, ln_nodes)
+
+lambda_gi = solve(1 / xi2 * I_N + Reduce('+', theta_n) %*% t(Reduce('+', theta_n)))
+
+for (i in 1:ln_nodes){
+    mu_gi <- t(lambda_gi) %*% (eta / xi2 + (Reduce('+', theta_n) %*% colSums(theta[[i]])) / delta2)
+    samp <- mvrnorm(5000, mu_gi, lambda_gi)
+    mn <- apply(samp, 2, mean)
+    std <- apply(samp, 2, sd)
+    tv <- mn / std
+    pv1 <- apply(samp, 2, function(x) sum(x > 0) / dim(samp)[1])
+    pv2 <- apply(samp, 2, function(x) sum(x < 0) / dim(samp)[1])
+    gamma[i,] <- mn
+    pval1[i,] <- pv1
+    pval2[i,] <- pv2
+}

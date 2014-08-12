@@ -36,6 +36,29 @@ def cleanData(csv_f, output_f):
     return node_dict
 
 
+def cleanDateData(csv_f, output_f):
+    """cleans the csv file"""
+
+    t_1 = datetime.now()
+
+    date_dict = {}
+
+    reader = csv.reader(open(csv_f, "rb"))
+    reader_l = list(reader)
+    reader_ln = len(reader_l)
+    for i, r in enumerate(reader_l):
+        text = r[2]
+        date = datetime.strptime(r[0], "%a %b %d %H:%M:%S +0000 %Y")
+        date = date.strftime("%Y-%m-%d %H")
+        if date not in date_dict:
+            date_dict[date] = ""
+        date_dict[date] += " %s" % text
+        print (i * 100.) / reader_ln, datetime.now() - t_1
+    writer = csv.writer(open(output_f, "wb"))
+    for date in date_dict:
+        writer.writerow([date, date_dict[date]])
+
+
 def sortByDate(data):
     """returns the dates and values sorted by date, this drops
     the dictionary structure"""
@@ -104,8 +127,8 @@ def cleanRData(i_csv_f, o_csv_f):
         text = r[2]
         node = r[1]
         date = datetime.strptime(r[0], "%a %b %d %H:%M:%S +0000 %Y")
-        if date.hour >= 12:
-            date = date.replace(hour = (date.hour - date.hour % 12))
+        if date.hour >= 6:
+            date = date.replace(hour = (date.hour - date.hour % 6))
         else:
             date = date.replace(hour = 0)
         date = date.strftime("%Y-%m-%d %H:00:00")
@@ -124,6 +147,13 @@ def cleanRData(i_csv_f, o_csv_f):
     writer = csv.writer(open(o_csv_f, "wb"))
     mx_date = 0
     for n in node_dict:
+<<<<<<< HEAD
+=======
+        for d in node_dict[n].keys():
+            if len(node_dict[n][d]) < 10:
+                del node_dict[n][d]
+    for n in node_dict:
+>>>>>>> 21fd306333f7e18e9d29d47286c0baaf33fe02a3
         t_date = len(node_dict[n])
         if t_date > mx_date:
             mx_date = t_date
