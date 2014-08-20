@@ -3,7 +3,7 @@ library(topicmodels)
 library(ggplot2)
 library(MASS)
 
-tab <- read.csv("8-11-2014_node_data.csv", header=FALSE)
+tab <- read.csv("8-19-2014_node_data.csv", header=FALSE)
 
 # fix datetime
 tab[,2] <- as.POSIXct(tab[,2])
@@ -35,7 +35,7 @@ save.image("DTM.RData")
 model = LDA(dtm, 20)
 
 # correlation code
-K <- 20
+K <- 50
 
 # ols code
 
@@ -48,7 +48,7 @@ reg_l <- list()
 p_l <- list()
 
 # iterate through the nodes
-for(i in 1:20){
+for(i in 1:K){
     reg_mat <- matrix(NA, ln_nodes, ln_nodes)
     p_mat <- matrix(NA, ln_nodes, ln_nodes)
     for(j in 1:ln_nodes){
