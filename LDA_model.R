@@ -34,8 +34,14 @@ save.image("DTM.RData")
 
 model = LDA(dtm, 20)
 
+# save the model image
+save.image("20_Topic_LDA.RData")
+
 # correlation code
 K <- 50
+xi2 <- 20
+delta2 <- 20
+eta <- 0
 
 # ols code
 
@@ -57,7 +63,7 @@ for(i in 1:K){
         for(k in 1:ln_nodes){
             reg_data[paste("I", k, sep="")] <- model@gamma[,i][((k-1)*stp + 1):(k*stp -1)]
         }
-        mod <- lm(D ~ ., data=reg_data)
+        mod <- glm(D ~ ., data=reg_data, family=binomial(logit))
         for(k in 1:ln_nodes){
             reg_mat[j, k] <- coef(summary(mod))[,1][k]
             p_mat[j, k] <- coef(summary(mod))[,4][k]
@@ -89,10 +95,7 @@ for(i in 1:ln_nodes){
 }
 
 
-I_K <- diag(20)
 I_N <- diag(ln_nodes)
-
-eta <- 1.5
 
 # mcmc results
 gamma <- matrix(NA, ln_nodes, ln_nodes)
