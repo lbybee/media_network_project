@@ -147,13 +147,10 @@ def cleanRData(i_csv_f, o_csv_f):
     writer = csv.writer(open(o_csv_f, "wb"))
     mx_date = 0
     for n in node_dict:
-<<<<<<< HEAD
-=======
         for d in node_dict[n].keys():
             if len(node_dict[n][d]) < 10:
                 del node_dict[n][d]
     for n in node_dict:
->>>>>>> 21fd306333f7e18e9d29d47286c0baaf33fe02a3
         t_date = len(node_dict[n])
         if t_date > mx_date:
             mx_date = t_date
