@@ -49,6 +49,60 @@ nodes <- unique(tab[,1])
 ln_nodes <- length(nodes)
 stp <- length(tab[,1]) / ln_nodes
 
+# convert topics into mat
+top_mat <- matrix(NA, ln_nodes, stp)
+topics <- topics(model)
+for(i in 1:ln_nodes){
+    for(j in 1:stp){
+        top_mat[i, j] <- topics[(i - 1) * ln_nodes + j]
+    }
+}
+
+# conditional prob
+cond_prob_mat <- matrix(NA, ln_nodes, ln_nodes)
+# most likely topic in each date node pair
+
+
+# iterate through nodes
+for(i in 1:ln_nodes){
+    for(j in 1:ln_nodes){
+        i_d <- top_mat[i, 2:stp]
+        j_d <- top_mat[j, 1:(stp-1)]
+        ln_data <- length(i_d)
+        cond_prob_mat[i, j] <- sum(i_d == j_d) / ln_data
+    }
+}
+
+
+# generate truth value
+truth_ind <- matrix(NA, K, stp - 1)
+
+for(i in 1:K){
+    for(j in 2:stp){
+        truth_ij <- 0
+        prev_ind <- which(top_mat[,j-1] == i)
+        curr_ind <- which(top_mat[,j] == i)
+        for(k in curr_ind){
+            belief <- 1
+            for(q in prev_ind){
+                belief <- belief * (1 - cond_prob_mat[k, q])
+            }
+            truth_ij <- truth_ij + belief
+        }
+        truth_ij <- truth_ij / ln_nodes
+        truth_ind[i, j - 1] <- truth_ij
+    }
+} 
+            
+# generate depedent truth
+truth_dep <- matrix(NA, K, stp - 1)
+for(i in 1:K){
+    for(j in 2:stp){
+        truth_dep[i, j - 1] <- sum(top_mat[,j] == i) / ln_nodes
+    }
+}
+
+
 # initalize storage
 reg_l <- list()
 p_l <- list()
