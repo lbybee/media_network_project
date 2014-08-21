@@ -3,7 +3,7 @@ library(topicmodels)
 library(ggplot2)
 library(MASS)
 
-tab <- read.csv("8-12-2014_node_data.csv", header=FALSE)
+tab <- read.csv("8-19-2014_node_data.csv", header=FALSE)
 
 # fix datetime
 tab[,2] <- as.POSIXct(tab[,2])
@@ -38,7 +38,7 @@ model = LDA(dtm, 20)
 save.image("20_Topic_LDA.RData")
 
 # correlation code
-K <- 20
+K <- 50
 xi2 <- 20
 delta2 <- 20
 eta <- 0
