@@ -246,6 +246,12 @@ The estimate the influence that each newspaper has on the other newspapers we st
 
 This matrix can be used to represent the influence that each newspapers has on the other newspapers in the graph.
 
+Using the graph of newspapers and periods we are able to build a measure of the likelihood of each topic for each period.  Naively this could be done by treating each newspaper as an observation and determing the proportion of each topic in each period.  Unfortunately, this ignores one possible concern which is that each newspaper is unlikely to be indpendent.  As a result we use an alternative measure as well.  Our measure is the probability that the observations we are making are independent of influence of other newspapers.  We calculate this measure by getting the probability that each observation is independent,
+
+\[P(TI_{it+1}) = \prod_{j=1}^J (1 - P(T_{it+1} | T_{jt}))P(T_{it+1})\]
+
+where J is the number of newspapers that reported on a topic in the previous period.  We use both this measure and the naive measure later in the paper.
+
 
 
 \section{Implementation}
