@@ -3,7 +3,7 @@ library(topicmodels)
 library(ggplot2)
 library(MASS)
 
-tab <- read.csv("8-19-2014_node_data.csv", header=FALSE)
+tab <- read.csv("8-21-2014_node_data.csv", header=FALSE)
 
 # fix datetime
 tab[,2] <- as.POSIXct(tab[,2])
@@ -38,7 +38,7 @@ model = LDA(dtm, 20)
 save.image("20_Topic_LDA.RData")
 
 # correlation code
-K <- 50
+K <- 20
 xi2 <- 20
 delta2 <- 20
 eta <- 0
@@ -100,6 +100,46 @@ for(i in 1:K){
     for(j in 2:stp){
         truth_dep[i, j - 1] <- sum(top_mat[,j] == i) / ln_nodes
     }
+}
+
+
+# generate the risk for a node for each period
+topic_risk <- list()
+for(i in 1:K){
+    t_mat <- matrix(NA, ln_nodes, stp - 1)
+    for(j in 2:stp){
+        prev_ind <- which(top_mat[,j - 1] == i)
+        for(k in 1:ln_nodes){
+            node_risk <- sum(cond_prob_mat[k, prev_ind])
+            t_mat[k, j - 1] <- node_risk
+        }
+    }
+    topic_risk[[i]] <- t_mat
+}
+
+
+# prduces expected value in each pair
+expected_val_mat <- matrix(NA, ln_nodes, stp - 1)
+
+for(i in 1:ln_nodes){
+    for(j in 2:stp){
+        mx <- 0
+        mx_ind <- 1
+        for(k in 1:K){
+            if(topic_risk[[k]][i, j - 1] > mx){
+                mx <- topic_risk[[k]][i, j - 1]
+                mx_ind <- k
+            }
+        }
+        expected_val_mat[i, j - 1] <- mx_ind
+    }
+}
+
+            
+# quality of firm
+influence <- rep(NA, ln_nodes)
+for(i in 1:ln_nodes){
+    influence[i] <- sum(cond_prob_mat[,i])
 }
 
 
