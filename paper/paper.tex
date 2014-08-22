@@ -236,6 +236,18 @@ Next we consider the possibility that there are risk averse media firms.  These 
 
 Firms that are more risk averse should have a higher $\beta_2$ relative to the rest of the population of firms. NOTE: This may also fit better in a different section.
 
+\section{Methodology}
+
+The data was scraped from a list of Twitter handles for US newspapers from the US Newspaper List (USNL, http://www.usnpl.com/).  From this list __ accounts were used that had a high enough frequency of tweets.  We experimented with several different periods.  A period consists of the text of all tweets made by a newspaper in a given time frame, 3 hours, 6 hours, 12 hours, 24 hours, 7 days.  For each period the text was cleaned in the following way.  All upper case characterds were replaced with lower case characters, all punctuation was removed, all numbers were removed, all white space was removed, urls were removed, this is particularlly important for Twitter since many tweets include urls (HOW MANY?).  Finally, stop words are removed, this is done using the English stop words list from the tm library (for text mining) in R.  All the analysis was done in R and the code is available in an appendix.  Once the data was cleaned it is turned into a document term matrix to make it usable for LDA.
+
+The estimate the influence that each newspaper has on the other newspapers we start with the topic proportions produced from the LDA models.  These are the $\theta$ values that represent the parameters for a multinomial model from which the words are selected.  They essentially give a measure of how prevelant a given topic is in a given document.  In this case each document represents a newspaper period pair.  Using these topic proportions you can produce an estimate of the most likely topic for each document.  Using these most likely topics we build a matrix of conditional probabilities, representing that a given topic observed in the ith newspaper in period t will appear in the jth newspaper in period t+1.
+
+\[P(T_{jt+1} | T_{it})\]
+
+This matrix can be used to represent the influence that each newspapers has on the other newspapers in the graph.
+
+
+
 \section{Implementation}
 
 NOTE: This section needs to be updated, the model is now completely different.
