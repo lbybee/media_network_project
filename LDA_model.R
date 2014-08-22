@@ -1,8 +1,10 @@
+#### load libraries
 library(tm)
 library(topicmodels)
 library(ggplot2)
 library(MASS)
 
+#### load data
 tab <- read.csv("8-21-2014_node_data.csv", header=FALSE)
 
 # fix datetime
@@ -32,19 +34,19 @@ dtm <- DocumentTermMatrix(corpus)
 # save the document term matrix data
 save.image("DTM.RData")
 
+#### LDA model
 model = LDA(dtm, 20)
 
 # save the model image
 save.image("20_Topic_LDA.RData")
 
-# correlation code
+# input values
 K <- 20
 xi2 <- 20
 delta2 <- 20
 eta <- 0
 
-# ols code
-
+# make nodes, the length of nodes and the number of periods
 nodes <- unique(tab[,1])
 ln_nodes <- length(nodes)
 stp <- length(tab[,1]) / ln_nodes
@@ -58,10 +60,8 @@ for(i in 1:ln_nodes){
     }
 }
 
-# conditional prob
+#### Conditional Prob
 cond_prob_mat <- matrix(NA, ln_nodes, ln_nodes)
-# most likely topic in each date node pair
-
 
 # iterate through nodes
 for(i in 1:ln_nodes){
@@ -73,8 +73,8 @@ for(i in 1:ln_nodes){
     }
 }
 
-
-# generate truth value
+#### Generate Truth Value
+# independent truth value
 truth_ind <- matrix(NA, K, stp - 1)
 
 for(i in 1:K){
@@ -94,7 +94,7 @@ for(i in 1:K){
     }
 } 
             
-# generate depedent truth
+# dependent truth value
 truth_dep <- matrix(NA, K, stp - 1)
 for(i in 1:K){
     for(j in 2:stp){
@@ -103,7 +103,7 @@ for(i in 1:K){
 }
 
 
-# generate the risk for a node for each period
+#### Risk for each Node Period
 topic_risk <- list()
 for(i in 1:K){
     t_mat <- matrix(NA, ln_nodes, stp - 1)
@@ -117,8 +117,7 @@ for(i in 1:K){
     topic_risk[[i]] <- t_mat
 }
 
-
-# prduces expected value in each pair
+#### Expected Value for each Node Period
 expected_val_mat <- matrix(NA, ln_nodes, stp - 1)
 
 for(i in 1:ln_nodes){
@@ -135,14 +134,13 @@ for(i in 1:ln_nodes){
     }
 }
 
-            
-# quality of firm
+#### Quality of Node
 influence <- rep(NA, ln_nodes)
 for(i in 1:ln_nodes){
     influence[i] <- sum(cond_prob_mat[,i])
 }
 
-
+### OLS
 # initalize storage
 reg_l <- list()
 p_l <- list()
@@ -168,6 +166,7 @@ for(i in 1:K){
 }
 
 
+#### MCMC Approach
 # build data
 theta_n <- list()
 for (i in 1:(stp-1)){
