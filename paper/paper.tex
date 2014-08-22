@@ -252,7 +252,9 @@ Using the graph of newspapers and periods we are able to build a measure of the 
 
 where J is the number of newspapers that reported on a topic in the previous period.  We use both this measure and the naive measure later in the paper.
 
+Next we estimate the expected value for each node period.  This is estimated by taking the influence for each newspaper and calculated the weighted sum of newspapers that are producing a given topic in period t.  This weighted sum produces a value for each topic.  The maximum of these values in then chosen for each newspaper and period producing the expected value with the corresponding topic.
 
+Finally, we estimate the total influence of each newspaper by summing the individual influences on each other newspaper.
 
 \section{Implementation}
 
