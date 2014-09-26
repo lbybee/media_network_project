@@ -41,7 +41,7 @@ model = LDA(dtm, 20)
 save.image("20_Topic_LDA.RData")
 
 # input values
-K <- 20
+K <- 50
 xi2 <- 20
 delta2 <- 20
 eta <- 0
