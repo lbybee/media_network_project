@@ -39,21 +39,18 @@ def cleanRData(i_csv_f, o_csv_f, hr):
         node_dict[node][date] += " %s" % text
         print (i * 100.) / reader_ln, datetime.now() - t_1, "dict"
     writer = csv.writer(open(o_csv_f, "wb"))
-    mx_date = 0
+    mx_date = []
     for n in node_dict:
         for d in node_dict[n].keys():
             if len(node_dict[n][d]) < 10:
-                del node_dict[n][d]
+                node_dict[n][d] = ""
     for n in node_dict:
-        t_date = len(node_dict[n])
-        if t_date > mx_date:
+        t_date =node_dict[n].keys()
+        if len(t_date) > len(mx_date):
             mx_date = t_date
     for n in node_dict.keys():
-        if len(node_dict[n]) != mx_date:
-            del node_dict[n]
-    print len(node_dict)
-    for n in node_dict:
-        for d in node_dict[n]:
-            writer.writerow([n, d, node_dict[n][d]])
-
-
+        for d in mx_date:
+            if d in node_dict[n]:
+                writer.writerow([n, d, node_dict[n][d]])
+            else:
+                writer.writerow([n, d, ""])
