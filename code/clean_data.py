@@ -40,10 +40,10 @@ def cleanRData(i_csv_f, o_csv_f, hr):
         print (i * 100.) / reader_ln, datetime.now() - t_1, "dict"
     writer = csv.writer(open(o_csv_f, "wb"))
     mx_date = []
-    for n in node_dict:
-        for d in node_dict[n].keys():
-            if len(node_dict[n][d]) < 10:
-                node_dict[n][d] = ""
+    #for n in node_dict:
+    #    for d in node_dict[n].keys():
+    #        if len(node_dict[n][d]) < 10:
+    #            node_dict[n][d] = ""
     for n in node_dict:
         t_date =node_dict[n].keys()
         if len(t_date) > len(mx_date):

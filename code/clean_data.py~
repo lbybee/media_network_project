@@ -54,4 +54,3 @@ def cleanRData(i_csv_f, o_csv_f, hr):
                 writer.writerow([n, d, node_dict[n][d]])
             else:
                 writer.writerow([n, d, ""])
-
