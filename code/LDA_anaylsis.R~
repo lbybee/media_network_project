@@ -19,8 +19,10 @@ genOLS <- function(model, K, lnnodes, stp, lag){
                 reg_data[paste("I", k, sep="")] <- model@gamma[((k-1)*stp + 1):(k*stp - lag),i]
             }
             mod <- glm(D ~ ., data=reg_data, family=binomial(logit))
+            print(dim(reg_mat)) 
+            print(length(coef(summary(mod))[2:(lnnodes+1),1]))
             reg_mat[j,] <- coef(summary(mod))[2:(lnnodes+1),1]
-            p_mat[j,] <- coef(summary(mod))[2:(lnnodes+1),4]
+            p_mat[j,] <- coef(summary(mod))[,4]
         }
         results$coef[[i]] <- reg_mat
         results$pval[[i]] <- p_mat
