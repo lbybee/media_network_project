@@ -2,7 +2,7 @@
 library(tm)
 
 # load data
-tab <- read.csv("20150106_R_ready_12.csv", header=FALSE)
+tab <- read.csv("20150106_R_ready_12n.csv", header=FALSE)
 
 # fix datetime
 tab[,2] <- as.POSIXct(tab[,2])
