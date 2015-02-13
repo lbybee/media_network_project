@@ -1,13 +1,12 @@
 from datetime import datetime
-#import MySQLdb
+import MySQLdb
 
 
 def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     """initalizes tweet and user tables in the specified db to fill with
     data"""
 
-    #rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
-    rdb = "crap"
+    rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
     cursor = rdb.cursor()
 
     tweet_str = """CREATE TABLE %s (
@@ -90,32 +89,14 @@ def insertTweet(cursor, tweet, tweet_tab):
     var_list.append(tweet["retweet_count"])
     var_list.append(int(tweet["retweeted"]))
     
-    var_list.append(tweet["source"])
+    var_list.append('%s' % tweet["source"])
 
-    var_list.append(tweet["text"])
+    var_list.append('%s' % tweet["text"])
 
     var_list.append(tweet["user"]["id"])
 
-    insert_str = """INSERT INTO %s (TID,
-                                    YEAR,
-                                    MONTH,
-                                    DAY,
-                                    HOUR,
-                                    MINUTE,
-                                    SECOND,
-                                    IN_REPLY_TO_SCREEN_NAME,
-                                    IN_REPLY_TO_STATUS_ID,
-                                    IN_REPLY_TO_USER_ID,
-                                    LANG,
-                                    POSSIBLY_SENSITIVE,
-                                    RETWEET_COUNT,
-                                    RETWEETED,
-                                    SOURCE
-                                    TEXT,
-                                    UID)
-                    VALUES (%d, %d, %d, %d, %d, %d, %d, %s, %d, %d,
-                            %s, %d, %d, %d, %s, %s, %d)""" % (tuple([tweet_tab] + var_list))
-    return insert_str 
+    insert_str = """INSERT INTO %s (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, SOURCE TEXT, UID) VALUES (%d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %s, %s, %d)""" % tuple([tweet_tab] + var_list)
+    cursor.execute(insert_str)  
 
 
 def insertUser(cursor, tweet, user_tab):
@@ -143,9 +124,9 @@ def insertUser(cursor, tweet, user_tab):
 
     var_list.append(int(user["default_profile"]))
     if user["description"] is not None:
-        var_list.append(user["description"])
+        var_list.append('%s' % user["description"])
     else:
-        var_list.append("")
+        var_list.append("''")
     var_list.append(int(user["default_profile_image"]))
     var_list.append(user["favourites_count"])
     var_list.append(user["followers_count"])
@@ -153,7 +134,7 @@ def insertUser(cursor, tweet, user_tab):
     var_list.append(int(user["geo_enabled"]))
     var_list.append(user["lang"])
     var_list.append(user["listed_count"])
-    var_list.append(user["location"])
+    var_list.append('%s' % user["location"])
     var_list.append(user["name"])
     var_list.append(int(user["protected"]))
     var_list.append(user["screen_name"])
@@ -164,5 +145,5 @@ def insertUser(cursor, tweet, user_tab):
         var_list.append(0)
     var_list.append(int(user["verified"]))
 
-    insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, URL, UTC_OFFSET, VERIFIED) VALUES  (%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d, %d)" % tuple([user_tab] + var_list)
-    return insert_str 
+    insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, URL, UTC_OFFSET, VERIFIED) VALUES  (%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
+    cursor.execute(insert_str) 
