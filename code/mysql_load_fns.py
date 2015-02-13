@@ -87,7 +87,7 @@ def insertTweet(cursor, tweet, tweet_tab):
     var_list.append(tweet["retweet_count"])
     var_list.append(int(tweet["retweeted"]))
     
-    var_list.append('%s' % tweet["text"])
+    var_list.append("'%s'" % tweet["text"])
 
     var_list.append(tweet["user"]["id"])
 
@@ -120,7 +120,7 @@ def insertUser(cursor, tweet, user_tab):
 
     var_list.append(int(user["default_profile"]))
     if user["description"] is not None:
-        var_list.append('%s' % user["description"])
+        var_list.append("'%s'" % user["description"])
     else:
         var_list.append("''")
     var_list.append(int(user["default_profile_image"]))
@@ -130,7 +130,7 @@ def insertUser(cursor, tweet, user_tab):
     var_list.append(int(user["geo_enabled"]))
     var_list.append(user["lang"])
     var_list.append(user["listed_count"])
-    var_list.append('%s' % user["location"])
+    var_list.append("'%s'" % user["location"])
     var_list.append(user["name"])
     var_list.append(int(user["protected"]))
     var_list.append(user["screen_name"])

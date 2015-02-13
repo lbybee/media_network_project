@@ -52,8 +52,8 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   UTC_OFFSET INT(10),
                   VERIFIED INT(1) )""" % user_tab
 
-    cursor.execute(MySQLdb.escape_string(tweet_str))
-    cursor.execute(MySQLdb.escape_string(user_str))
+    cursor.execute(tweet_str)
+    cursor.execute(user_str)
     rdb.close()
 
 
