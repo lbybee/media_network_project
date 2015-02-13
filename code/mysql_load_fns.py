@@ -95,7 +95,7 @@ def insertTweet(cursor, tweet, tweet_tab):
 
     var_list.append(tweet["user"]["id"])
 
-    insert_str = """INSERT INTO %s (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, SOURCE TEXT, UID) VALUES (%d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %s, %s, %d)""" % tuple([tweet_tab] + var_list)
+    insert_str = """INSERT INTO %s (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, SOURCE, TEXT, UID) VALUES(%d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %s, %s, %d)""" % tuple([tweet_tab] + var_list)
     cursor.execute(insert_str)  
 
 
@@ -145,7 +145,7 @@ def insertUser(cursor, tweet, user_tab):
         var_list.append(0)
     var_list.append(int(user["verified"]))
 
-    insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, URL, UTC_OFFSET, VERIFIED) VALUES  (%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
+    insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, URL, UTC_OFFSET, VERIFIED) VALUES(%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
     cursor.execute(insert_str) 
 
 
