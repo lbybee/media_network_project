@@ -147,3 +147,19 @@ def insertUser(cursor, tweet, user_tab):
 
     insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, URL, UTC_OFFSET, VERIFIED) VALUES  (%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
     cursor.execute(insert_str) 
+
+
+def insertTweetList(host, user, passwd, db, tweet_tab, user_tab, tweets):
+    """inserts a list of tweets into the specified db"""
+
+    t_1 = datetime.now()
+    t_ln = len(tweets)
+    rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+    cursor = rdb.cursor()
+
+    for i, t in enumerate(tweets):
+        insertTweet(cursor, t, tweet_tab)
+        insertUser(cursor, t, user_tab)
+        print (i * 100.) / t_ln, i, t_1
+
+    rdb.close()
