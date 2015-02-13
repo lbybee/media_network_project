@@ -8,7 +8,7 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
     cursor = rdb.cursor()
 
-    tweet_str = """CREATE TABLE %s (
+    tweet_str = """CREATE TABLE '%s' (
                    TID INT,
                    YEAR INT,
                    MONTH INT,
@@ -27,8 +27,8 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    TEXT VARCHAR(140),
                    UID INT )""" % tweet_tab
 
-    user_str = """CREATE TABLE %s (
-                  UID INT
+    user_str = """CREATE TABLE '%s' (
+                  UID INT,
                   YEAR INT,
                   MONTH INT,
                   DAY INT,
