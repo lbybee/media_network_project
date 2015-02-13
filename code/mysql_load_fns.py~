@@ -5,7 +5,8 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     """initalizes tweet and user tables in the specified db to fill with
     data"""
 
-    conn = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+    rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+    cursor = rdb.cursor()
 
     tweet_str = """CREATE TABLE %s (
                    ID INT,
@@ -24,7 +25,7 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    RETWEETED INT,
                    SOURCE VARCHAR,
                    TEXT VARCHAR,
-                   USER_ID, INT )""" % tweet_tab
+                   USER_ID INT )""" % tweet_tab
 
     user_str = """CREATE TABLE %s (
                   ID INT
@@ -52,5 +53,6 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   UTC_OFFSET INT,
                   VERIFIED INT )""" % user_tab
 
-    conn.execute(tweet_str)
-    conn.execute(user_str)
+    cursor.execute(tweet_str)
+    cursor.execute(user_str)
+    rdb.close()

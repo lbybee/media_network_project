@@ -16,16 +16,16 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    HOUR INT,
                    MINUTE INT,
                    SECOND INT,
-                   IN_REPLY_TO_SCREEN_NAME VARCHAR,
+                   IN_REPLY_TO_SCREEN_NAME VARCHAR(15),
                    IN_REPLY_TO_STATUS_ID INT,
                    IN_REPLY_TO_USER_ID INT,
-                   LANG VARCHAR,
+                   LANG VARCHAR(10),
                    POSSIBLY_SENSITVE INT,
                    RETWEET_COUNT INT,
                    RETWEETED INT,
-                   SOURCE VARCHAR,
-                   TEXT VARCHAR,
-                   USER_ID, INT )""" % tweet_tab
+                   SOURCE VARCHAR(100),
+                   TEXT VARCHAR(140),
+                   USER_ID INT )""" % tweet_tab
 
     user_str = """CREATE TABLE %s (
                   ID INT
@@ -36,20 +36,20 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   MINUTE INT,
                   SECOND INT,
                   DEFAULT_PROFILE INT,
-                  DESCRIPTION VARCHAR,
+                  DESCRIPTION VARCHAR(160),
                   DEFAULT_PROFIlE_IMAGE INT,
                   FAVOURITES_COUNT INT,
                   FOLLOWERS_COUNT INT,
                   FRIEND_COUNT INT,
                   GEO_ENABLED INT,
-                  LANG VARCHAR,
+                  LANG VARCHAR(10),
                   LISTED_COUNT INT,
-                  LOCATION VARCHAR,
-                  NAME VARCHAR,
+                  LOCATION VARCHAR(50),
+                  NAME VARCHAR(20),
                   PROTECTED INT,
-                  SCREEN_NAME VARCHAR,
+                  SCREEN_NAME VARCHAR(15),
                   STATUSES_COUNT INT,
-                  URL VARCHAR,
+                  URL VARCHAR(100),
                   UTC_OFFSET INT,
                   VERIFIED INT )""" % user_tab
 
