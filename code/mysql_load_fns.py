@@ -52,8 +52,8 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   UTC_OFFSET INT(10),
                   VERIFIED INT(1) )""" % user_tab
 
-    cursor.execute(tweet_str)
-    cursor.execute(user_str)
+    cursor.execute(MySQLdb.escape_string(tweet_str))
+    cursor.execute(MySQLdb.escape_string(user_str))
     rdb.close()
 
 
@@ -92,7 +92,7 @@ def insertTweet(cursor, tweet, tweet_tab):
     var_list.append(tweet["user"]["id"])
 
     insert_str = """INSERT INTO %s (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, TEXT, UID) VALUES(%d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %s, %d)""" % tuple([tweet_tab] + var_list)
-    cursor.execute(insert_str)  
+    cursor.execute(MySQLdb.escape_string(insert_str))  
 
 
 def insertUser(cursor, tweet, user_tab):
@@ -142,7 +142,7 @@ def insertUser(cursor, tweet, user_tab):
     var_list.append(int(user["verified"]))
 
     insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, UTC_OFFSET, VERIFIED) VALUES(%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
-    cursor.execute(insert_str) 
+    cursor.execute(MySQLdb.escape_string(insert_str)) 
 
 
 def insertTweetList(host, user, passwd, db, tweet_tab, user_tab, tweets):
