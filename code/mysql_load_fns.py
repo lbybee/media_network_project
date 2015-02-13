@@ -9,7 +9,7 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     cursor = rdb.cursor()
 
     tweet_str = """CREATE TABLE %s (
-                   ID INT,
+                   TID INT,
                    YEAR INT,
                    MONTH INT,
                    DAY INT,
@@ -25,10 +25,10 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    RETWEETED INT,
                    SOURCE VARCHAR(100),
                    TEXT VARCHAR(140),
-                   USER_ID INT )""" % tweet_tab
+                   UID INT )""" % tweet_tab
 
     user_str = """CREATE TABLE %s (
-                  ID INT
+                  UID INT
                   YEAR INT,
                   MONTH INT,
                   DAY INT,
