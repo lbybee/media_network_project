@@ -54,5 +54,6 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   VERIFIED INT )""" % user_tab
 
     cursor.execute(tweet_str)
+    print "hi"
     cursor.execute(user_str)
     rdb.close()
