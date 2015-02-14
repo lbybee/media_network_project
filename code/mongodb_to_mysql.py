@@ -24,12 +24,12 @@ user_tab = sys.argv[6]
 #initTwitterTables(host, user, passwd, db, tweet_tab, user_tab)
 
 rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
-#rdb.set_character_set('utf8')
+rdb.set_character_set('utf8')
 cursor = rdb.cursor()
-#cursor.execute('SET NAMES utf8;')
-#cursor.execute('SET CHARACTER SET utf8;')
-#cursor.execute('SET character_set_connection=utf8;')
-cursor.execute('SET character_set_server=utf8mb4')
+cursor.execute('SET NAMES utf8mb4;')
+cursor.execute('SET CHARACTER SET utf8;')
+cursor.execute('SET character_set_connection=utf8;')
+cursor.execute('SET character_set_server=utf8mb4;')
 
 try:
     for obs in collection.find():
