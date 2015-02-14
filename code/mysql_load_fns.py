@@ -7,10 +7,14 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     data"""
 
     rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+    rdb.set_character_set('utf8')
     cursor = rdb.cursor()
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
 
     tweet_str = """CREATE TABLE %s (
-                   TID INT(25),
+                   TID BIGINT(25),
                    YEAR INT(4),
                    MONTH INT(2),
                    DAY INT(2),
@@ -18,17 +22,17 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    MINUTE INT(2),
                    SECOND INT(2),
                    IN_REPLY_TO_SCREEN_NAME NVARCHAR(15),
-                   IN_REPLY_TO_STATUS_ID INT(25),
-                   IN_REPLY_TO_USER_ID INT(25),
+                   IN_REPLY_TO_STATUS_ID BIGINT(25),
+                   IN_REPLY_TO_USER_ID BIGINT(25),
                    LANG NVARCHAR(10),
-                   POSSIBLY_SENSITVE INT(1),
+                   POSSIBLY_SENSITIVE INT(1),
                    RETWEET_COUNT INT(10),
                    RETWEETED INT(1),
                    TEXT NVARCHAR(140),
-                   UID INT(25) )""" % tweet_tab
+                   UID BIGINT(25) )""" % tweet_tab
 
     user_str = """CREATE TABLE %s (
-                  UID INT(25),
+                  UID BIGINT(25),
                   YEAR INT(4),
                   MONTH INT(2),
                   DAY INT(2),
@@ -54,10 +58,12 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
 
     cursor.execute(tweet_str)
     cursor.execute(user_str)
+    cursor.execute("ALTER TABLE %s ADD UNIQUE(UID)" % user_tab)
+    rdb.commit()
     rdb.close()
 
 
-def insertTweet(cursor, tweet, tweet_tab):
+def insertTweet(cursor, tweet, tweet_tab, rdb):
     """takes a tweet object and inserts the tweet element
     into the tweet table"""
 
@@ -83,19 +89,20 @@ def insertTweet(cursor, tweet, tweet_tab):
     var_list.append(tweet["in_reply_to_user_id"])
     
     var_list.append(tweet["lang"])
+    var_list.append(int(tweet["possibly_sensitive"]))
     
     var_list.append(tweet["retweet_count"])
     var_list.append(int(tweet["retweeted"]))
     
-    var_list.append("'%s'" % tweet["text"])
+    var_list.append(tweet["text"])
 
     var_list.append(tweet["user"]["id"])
 
-    insert_str = """INSERT INTO %s (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, TEXT, UID) VALUES(%d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %s, %d, %d, %s, %d)""" % tuple([tweet_tab] + var_list)
-    cursor.execute(MySQLdb.escape_string(insert_str))  
+    sql = ("INSERT INTO " + tweet_tab + " (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, TEXT, UID) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    cursor.execute(sql, tuple(var_list))
 
 
-def insertUser(cursor, tweet, user_tab):
+def insertUser(cursor, tweet, user_tab, rdb):
     """this function takes a tweet object, extracts the user and
     inserts the user into the user table specified"""
 
@@ -120,7 +127,7 @@ def insertUser(cursor, tweet, user_tab):
 
     var_list.append(int(user["default_profile"]))
     if user["description"] is not None:
-        var_list.append("'%s'" % user["description"])
+        var_list.append(user["description"])
     else:
         var_list.append("''")
     var_list.append(int(user["default_profile_image"]))
@@ -130,7 +137,7 @@ def insertUser(cursor, tweet, user_tab):
     var_list.append(int(user["geo_enabled"]))
     var_list.append(user["lang"])
     var_list.append(user["listed_count"])
-    var_list.append("'%s'" % user["location"])
+    var_list.append(user["location"])
     var_list.append(user["name"])
     var_list.append(int(user["protected"]))
     var_list.append(user["screen_name"])
@@ -141,8 +148,8 @@ def insertUser(cursor, tweet, user_tab):
         var_list.append(0)
     var_list.append(int(user["verified"]))
 
-    insert_str = "INSERT INTO %s (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, UTC_OFFSET, VERIFIED) VALUES(%d, %d, %d, %d, %d, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %d, %s, %d, %d, %d)" % tuple([user_tab] + var_list)
-    cursor.execute(MySQLdb.escape_string(insert_str)) 
+    insert_str = "INSERT IGNORE INTO " + user_tab + " (UID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, DEFAULT_PROFILE, DESCRIPTION, DEFAULT_PROFILE_IMAGE, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, GEO_ENABLED, LANG, LISTED_COUNT, LOCATION, NAME, PROTECTED, SCREEN_NAME, STATUSES_COUNT, UTC_OFFSET, VERIFIED) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(insert_str, tuple(var_list)) 
 
 
 def insertTweetList(host, user, passwd, db, tweet_tab, user_tab, tweets):
@@ -151,7 +158,11 @@ def insertTweetList(host, user, passwd, db, tweet_tab, user_tab, tweets):
     t_1 = datetime.now()
     t_ln = len(tweets)
     rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+    rdb.set_character_set('utf8')
     cursor = rdb.cursor()
+    cursor.execute('SET NAMES utf8;')
+    cursor.execute('SET CHARACTER SET utf8;')
+    cursor.execute('SET character_set_connection=utf8;')
 
     for i, t in enumerate(tweets):
         insertTweet(cursor, t, tweet_tab)
