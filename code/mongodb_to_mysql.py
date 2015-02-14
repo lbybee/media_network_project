@@ -31,13 +31,16 @@ cursor = rdb.cursor()
 #cursor.execute('SET character_set_connection=utf8;')
 cursor.execute('SET character_set_server=utf8mb4')
 
-for obs in collection.find():
-    insertTweet(cursor, obs, tweet_tab, rdb)
-    insertUser(cursor, obs, user_tab, rdb)
-    collection.remove({"_id": obs["_id"]})
-    print (i * 100.) / t_ln, i, datetime.now() - t_1, obs["_id"]
-    i += 1
-    if i % 100000 == 0:
-        rdb.commit()
-
+try:
+    for obs in collection.find():
+        insertTweet(cursor, obs, tweet_tab, rdb)
+        insertUser(cursor, obs, user_tab, rdb)
+        collection.remove({"_id": obs["_id"]})
+        print (i * 100.) / t_ln, i, datetime.now() - t_1, obs["_id"]
+        i += 1
+        if i % 100000 == 0:
+            rdb.commit()
+except Exception as e:
+    print e
+    rdb.commit()
 rdb.close()   

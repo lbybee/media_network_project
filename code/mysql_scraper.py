@@ -41,7 +41,7 @@ class StreamWatcherListener(tweepy.StreamListener, host, user, passwd, db, twitt
         myfns.insertTweet(self.cursor, json_data, self.tweet_tab)
         myfns.insertUser(self.cursor, json_data, self.user_tab)
         if random.randint(1, 1000) == 500:
-            myfns.rdb.commit()
+            self.rdb.commit()
         return True
 
     def on_error(self, status_code):
@@ -49,10 +49,12 @@ class StreamWatcherListener(tweepy.StreamListener, host, user, passwd, db, twitt
         error = open("errors.txt", "ab")
         error.write(str(status_code))
         error.write("\n")
+        self.rdb.commit()
         return True  # keep stream alive
 
     def on_timeout(self):
         print 'Snoozing Zzzzzz'
+        self.rdb.commit()
 
 
 def authorize(consumer_key, consumer_secret,
