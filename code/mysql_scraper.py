@@ -30,9 +30,12 @@ class StreamWatcherListener(tweepy.StreamListener, host, user, passwd, db, twitt
         self.db = db
         self.twitter_tab = twitter_tab
         self.user_tab = user_tab
-        self.rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
+        self.rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db, use_unicode=True, charset="utf8")
         self.cursor = self.rdb.cursor()
-        self.cursor.execute('SET character_set_server=utf8mb4')
+        self.cursor.execute('SET NAMES utf8mb4')
+        self.cursor.execute("SET CHARACTER SET utf8mb4")
+        self.cursor.execute("SET character_set_connection=utf8mb4")
+        self.cursor.execute("SET character_set_server=utf8mb4")
 
     def on_status(self, status):
         json_status = status.json
