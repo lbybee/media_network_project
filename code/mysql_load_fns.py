@@ -9,6 +9,10 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
     cursor = rdb.cursor()
 
+    cursor.execute('SET NAMES utf8mb4')
+    cursor.execute("SET CHARACTER SET utf8mb4")
+    cursor.execute("SET character_set_connection=utf8mb4")
+
     tweet_str = """CREATE TABLE %s (
                    TID BIGINT(25),
                    YEAR INT(4),
@@ -17,15 +21,15 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                    HOUR INT(2),
                    MINUTE INT(2),
                    SECOND INT(2),
-                   IN_REPLY_TO_SCREEN_NAME NVARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                   IN_REPLY_TO_SCREEN_NAME VARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                    IN_REPLY_TO_STATUS_ID BIGINT(25),
                    IN_REPLY_TO_USER_ID BIGINT(25),
-                   LANG NVARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                   LANG VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                    POSSIBLY_SENSITIVE INT(1),
                    RETWEET_COUNT INT(10),
                    RETWEETED INT(1),
-                   TEXT NVARCHAR(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-                   UID BIGINT(25) )""" % tweet_tab
+                   TEXT VARCHAR(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                   UID BIGINT(25) ) CHARACTER SET utf8mb4;""" % tweet_tab
 
     user_str = """CREATE TABLE %s (
                   UID BIGINT(25),
@@ -36,21 +40,21 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   MINUTE INT(2),
                   SECOND INT(2),
                   DEFAULT_PROFILE INT(1),
-                  DESCRIPTION NVARCHAR(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  DESCRIPTION VARCHAR(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                   DEFAULT_PROFIlE_IMAGE INT(1),
                   FAVOURITES_COUNT INT(10),
                   FOLLOWERS_COUNT INT(10),
                   FRIENDS_COUNT INT(10),
                   GEO_ENABLED INT(1),
-                  LANG NVARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  LANG VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                   LISTED_COUNT INT(10),
-                  LOCATION NVARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-                  NAME NVARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  LOCATION VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  NAME VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                   PROTECTED INT(1),
-                  SCREEN_NAME NVARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                  SCREEN_NAME VARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                   STATUSES_COUNT INT(10),
                   UTC_OFFSET INT(10),
-                  VERIFIED INT(1) )""" % user_tab
+                  VERIFIED INT(1) ) CHARACTER SET utf8mb4;""" % user_tab
     cursor.execute(tweet_str)
     cursor.execute(user_str)
     cursor.execute("ALTER TABLE %s ADD UNIQUE(TID)" % tweet_tab)
