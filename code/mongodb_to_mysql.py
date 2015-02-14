@@ -24,7 +24,6 @@ user_tab = sys.argv[6]
 initTwitterTables(host, user, passwd, db, tweet_tab, user_tab)
 
 rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
-rdb.set_character_set('utf8')
 cursor = rdb.cursor()
 
 cursor.execute("ALTER DATABASE `%s` CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci'" % db)
@@ -37,11 +36,6 @@ for row in results:
     sql = "ALTER TABLE `%s` convert to character set DEFAULT COLLATE DEFAULT" % (row[0])
     cursor.execute(sql)
 rdb.commit()
-
-cursor.execute('SET NAMES utf8;')
-cursor.execute('SET CHARACTER SET utf8;')
-cursor.execute('SET character_set_connection=utf8;')
-#cursor.execute('SET character_set_server=utf8mb4')
 
 try:
     for obs in collection.find():
