@@ -7,11 +7,8 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
     data"""
 
     rdb = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
-    rdb.set_character_set('utf8')
+    #rdb.set_character_set('utf8')
     cursor = rdb.cursor()
-    cursor.execute('SET NAMES utf8;')
-    cursor.execute('SET CHARACTER SET utf8;')
-    cursor.execute('SET character_set_connection=utf8;')
 
     tweet_str = """CREATE TABLE %s (
                    TID BIGINT(25),
@@ -56,8 +53,12 @@ def initTwitterTables(host, user, passwd, db, tweet_tab, user_tab):
                   UTC_OFFSET INT(10),
                   VERIFIED INT(1) )""" % user_tab
 
+    #cursor.execute('SET NAMES utf8mb4;')
+    #cursor.execute('SET CHARACTER SET utf8mb4;')
+    #cursor.execute('SET character_set_connection=utf8mb4;')
     cursor.execute(tweet_str)
     cursor.execute(user_str)
+    cursor.execute("ALTER TABLE %s ADD UNIQUE(TID)" % tweet_tab)
     cursor.execute("ALTER TABLE %s ADD UNIQUE(UID)" % user_tab)
     rdb.commit()
     rdb.close()
@@ -98,7 +99,7 @@ def insertTweet(cursor, tweet, tweet_tab, rdb):
 
     var_list.append(tweet["user"]["id"])
 
-    sql = ("INSERT INTO " + tweet_tab + " (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, TEXT, UID) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    sql = ("INSERT IGNORE INTO " + tweet_tab + " (TID, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND, IN_REPLY_TO_SCREEN_NAME, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, LANG, POSSIBLY_SENSITIVE, RETWEET_COUNT, RETWEETED, TEXT, UID) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
     cursor.execute(sql, tuple(var_list))
 
 
