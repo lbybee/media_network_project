@@ -60,26 +60,34 @@ class StreamWatcherListener(tweepy.StreamListener, host, user, passwd, db, twitt
         self.rdb.commit()
 
 
-def authorize(consumer_key, consumer_secret,
-              access_token, access_token_secret,
+def authorize(consumer_key, consumer_secret, access_token, access_token_secret,
+              host, user, passwd, db, tweetable, usertable,
               timeout=60):
     """authorizes the Twitter API"""
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.streaming.Stream(auth, StreamWatcherListener(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7]), timeout=timeout)
+    api = tweepy.streaming.Stream(auth, StreamWatcherListener(host, user, passwd,
+                                                              db, tweettable, usertable),
+                                  timeout=timeout)
     return api
 
 
 os.chdir(sys.argv[1])
 Config = ConfigParser.ConfigParser()
-Config.read("twitter.config")
+Config.read(sys.argv[2])
 consumer_key = Config.get("Twitter", "consumer_key")
 consumer_secret = Config.get("Twitter", "consumer_secret")
 access_token = Config.get("Twitter", "access_token")
 access_token_secret = Config.get("Twitter", "access_token_secret")
-api = authorize(consumer_key, consumer_secret,
-                access_token, access_token_secret)
+host = Config.get("Twitter", "host")
+user = Config.get("Twitter", "user")
+passwd = Config.get("Twitter", "passwd")
+db = Config.get("Twitter", "db")
+tweettable = Config.get("Twitter", "tweettable")
+usertable = Config.get("Twitter", "usertable")
+api = authorize(consumer_key, consumer_secret, access_token, access_token_secret,
+                host, user, passwd, db, tweettable, usertable)
 
 #load user list
 
